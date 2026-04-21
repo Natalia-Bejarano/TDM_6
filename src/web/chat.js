@@ -1,27 +1,54 @@
-// src/web/chat.js - Lógica de WebSockets en el servidor
-const activeConnections = new Map(); // Mapa para asociar userId con su conexión (Socket)
+/**
+ * Motor de Presencia y Mensajería (WebSocket) - UCA
+ * Gestiona el ciclo de vida de las conexiones y la persistencia de estados.
+ */
 
+const { getUsers, saveUsers } = require("../models/users");
+const { broadcast } = require("../utils/messaging");
+
+// Registro de sockets activos indexados por ID de usuario
+const activeConnections = new Map();
+
+/**
+ * Inicializa el canal de comunicación en tiempo real
+ * @param {WebSocket.Server} wss - Instancia del servidor WebSocket
+ */
 function setupChat(wss) {
   wss.on("connection", (ws) => {
     let currentUserId = null;
 
-    ws.on("message", (rawData) => {
+    // Manejo de eventos de entrada
+    ws.on("message", async (rawData) => {
       try {
         const message = JSON.parse(rawData.toString());
 
-        // Identificar al usuario y guardar su conexión
+        // PROTOCOLO 1: Registro de presencia (Identify)
         if (message.type === "identify") {
           currentUserId = message.userId;
           activeConnections.set(currentUserId, ws);
-          console.log(`Usuario ${currentUserId} conectado.`);
+
+          const users = await getUsers();
+          const userIndex = users.findIndex((u) => u.id === currentUserId);
+
+          if (userIndex !== -1) {
+            users[userIndex].status = "online";
+            await saveUsers(users);
+          }
+
+          // Notificación masiva de actualización de directorio
+          broadcast(activeConnections, {
+            type: "user_list_update",
+            users: users,
+          });
+
+          console.log(`[Socket] Nodo activo: ${currentUserId}`);
         }
 
-        // Manejar envío de mensajes privados
+        // PROTOCOLO 2: Mensajería Privada (1 a 1)
         if (message.type === "private_message") {
           const { to, text, from } = message;
           const recipientSocket = activeConnections.get(to);
 
-          // Si el destinatario está online, enviarle el mensaje
           if (recipientSocket && recipientSocket.readyState === 1) {
             recipientSocket.send(
               JSON.stringify({
@@ -34,13 +61,46 @@ function setupChat(wss) {
           }
         }
       } catch (err) {
-        console.error("Error procesando mensaje:", err);
+        console.error("⚠️ Fallo en el procesamiento de payload:", err.message);
       }
     });
 
-    // Limpiar al desconectar
-    ws.on("close", () => {
-      if (currentUserId) activeConnections.delete(currentUserId);
+    // MANEJO DE DESCONEXIÓN (Cierre de sesión o pestaña)
+    ws.on("close", async () => {
+      try {
+        if (currentUserId) {
+          activeConnections.delete(currentUserId);
+
+          const users = await getUsers();
+          const userIndex = users.findIndex((u) => u.id === currentUserId);
+
+          if (userIndex !== -1) {
+            users[userIndex].status = "offline";
+            await saveUsers(users);
+
+            // Sincronización masiva de estado offline
+            broadcast(activeConnections, {
+              type: "user_list_update",
+              users: users,
+            });
+
+            console.log(`[Socket] Nodo liberado: ${currentUserId}`);
+          }
+        }
+      } catch (err) {
+        console.error(
+          "❌ Error crítico en liberación de recursos:",
+          err.message,
+        );
+      }
+    });
+
+    // Control de errores de transporte para evitar caídas del proceso principal
+    ws.on("error", (err) => {
+      console.error(
+        `🔴 Error de transporte (${currentUserId || "Unknown"}):`,
+        err.message,
+      );
     });
   });
 }

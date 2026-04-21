@@ -29,7 +29,7 @@
       "email": "andrea@uca.edu.co",
       "rol": "monitor",
       "specialty": "Soporte Técnico Plataforma (Moodle)",
-      "status": "online",
+      "status": "offline",
       "img": "img/monitors/andrea.jpg"
     },
     {
@@ -39,7 +39,7 @@
       "email": "mateo@uca.edu.co",
       "rol": "monitor",
       "specialty": "Consultas Académicas Ciencias Económicas",
-      "status": "online",
+      "status": "offline",
       "img": "img/monitors/mateo.jpg"
     },
     {
@@ -73,7 +73,7 @@
       "rol": "student",
       "studentID": "UCA-88421",
       "faculty": "Facultad de Ingeniería",
-      "status": "online",
+      "status": "offline",
       "lastMessage": "Saben algo de la homologación...",
       "lastMessageTime": "2026-04-20T10:12:00Z",
       "attended": false
@@ -82,11 +82,11 @@
       "id": "S003",
       "name": "Roberto Gomez",
       "password": "123",
-      "email": " oberto@uca.edu.co",
+      "email": "roberto@uca.edu.co",
       "rol": "student",
       "studentID": "UCA-88422",
       "faculty": "Facultad de Ingeniería",
-      "status": "online",
+      "status": "offline",
       "lastMessage": "No puedo acceder al aula virtual.",
       "lastMessageTime": "2026-04-20T10:18:00Z",
       "attended": false
@@ -99,7 +99,7 @@
       "rol": "student",
       "studentID": "UCA-55210",
       "faculty": "Ciencias Económicas",
-      "status": "online",
+      "status": "offline",
       "lastMessage": "Quedo pendiente del envío del comprobante...",
       "lastMessageTime": "2026-04-20T10:19:00Z",
       "attended": true

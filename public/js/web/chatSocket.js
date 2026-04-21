@@ -11,19 +11,15 @@ export class ChatSocket {
     this.socket = new WebSocket(`${protocol}://${window.location.host}`);
 
     this.socket.onopen = () => {
-      // Notificar al servidor quién se conecta
       this.socket.send(
-        JSON.stringify({
-          type: "identify",
-          userId: this.userId,
-        }),
+        JSON.stringify({ type: "identify", userId: this.userId }),
       );
     };
 
     this.socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      // Si llega un mensaje nuevo, ejecutar el callback de la UI
-      if (data.type === "new_message") this.onMessageReceived(data);
+      // PASAMOS TODO EL OBJETO DATA AL CALLBACK
+      this.onMessageReceived(data);
     };
   }
 

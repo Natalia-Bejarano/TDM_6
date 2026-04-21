@@ -1,28 +1,49 @@
 /**
- * Envía un mensaje a un destinatario específico (1 a 1)
- * @param {Array} users - Arreglo de usuarios conectados con sus objetos ws
- * @param {String} targetId - ID del usuario que debe recibir el mensaje
- * @param {Object} data - Objeto con la información del mensaje
+ * Capa de Transporte de Red - Universidad Católica Americana (UCA)
+ * Proporciona métodos abstractos para la emisión de datos a través de WebSockets.
  */
-function sendTo(users, targetId, data) {
-  const msg = JSON.stringify(data);
-  const recipient = users.find((u) => u.id === targetId);
 
-  if (recipient && recipient.ws.readyState === 1) {
-    recipient.ws.send(msg);
-  } else {
-    console.log(`Error: Usuario ${targetId} no encontrado o desconectado.`);
-  }
-}
-function broadcast(users, data) {
+/**
+ * Transmite un mensaje a todos los nodos conectados (Broadcast masivo)
+ * @param {Map} activeConnections - Diccionario de sockets activos {userId: socket}
+ * @param {Object} data - Carga útil (payload) a serializar y enviar
+ */
+function broadcast(activeConnections, data) {
   const msg = JSON.stringify(data);
-  users.forEach((u) => {
-    if (u.ws.readyState === 1) {
-      //
-      u.ws.send(msg);
+
+  activeConnections.forEach((socket, userId) => {
+    // Verificación del estado de la conexión antes del envío (1 = OPEN)
+    if (socket && socket.readyState === 1) {
+      try {
+        socket.send(msg);
+      } catch (err) {
+        // Registro silencioso de fallos de red por nodo
+        console.error(
+          `[Transport Error] Nodo ${userId} inaccesible:`,
+          err.message,
+        );
+      }
     }
   });
 }
 
-module.exports = { broadcast, sendTo };
+/**
+ * Envía un mensaje a un destinatario único (Mensajería dirigida 1 a 1)
+ * @param {Map} activeConnections - Diccionario de sockets activos
+ * @param {String} targetId - Identificador único del receptor
+ * @param {Object} data - Carga útil a enviar
+ * @returns {Boolean} Confirmación de intento de envío
+ */
+function sendTo(activeConnections, targetId, data) {
+  const socket = activeConnections.get(targetId);
+  const msg = JSON.stringify(data);
 
+  if (socket && socket.readyState === 1) {
+    socket.send(msg);
+    return true;
+  }
+
+  return false;
+}
+
+module.exports = { broadcast, sendTo };

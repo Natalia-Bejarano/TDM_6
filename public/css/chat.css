@@ -1,43 +1,90 @@
-/* Contenedor de mensajes */
-.messages-display {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  gap: 10px;
-  overflow-y: auto;
-  background-color: #f9f9f9;
+/* Estructura del Chat */
+#chat-session {
+  display: none; /* Se activa por JS */
+  height: 100vh;
 }
 
-/* Burbuja base */
+.messages-display {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* Las burbujas que ya configuramos */
 .message-bubble {
   max-width: 70%;
-  padding: 10px 15px;
-  border-radius: 15px;
-  font-size: 0.9rem;
-  position: relative;
-  line-height: 1.4;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
 }
 
-/* Mensajes que YO envío (Derecha) */
+.message-bubble.received {
+  align-self: flex-start !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid red !important; /* Borde rojo temporal para ver si existe */
+  padding: 10px;
+  margin: 5px;
+  display: block !important;
+  min-width: 50px;
+}
+
+/* Burbuja de mensajes enviados (Azul) */
+.message-bubble.sent {
+  align-self: flex-end !important;
+  background-color: #002d72 !important;
+  color: #ffffff !important;
+  padding: 10px;
+  margin: 5px;
+  display: block !important;
+}
+/* Sidebar: Estados */
+.contact-item {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+}
+
+/* El truco para ver el estado: colores de fondo claros */
+.contact-item.online {
+  background-color: #d4edda !important;
+  border-left: 5px solid #28a745;
+}
+.contact-item.offline {
+  background-color: #f8d7da !important;
+  opacity: 0.7;
+}
+
+/* Contenedor de mensajes */
+#messages-display {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  background: #eee;
+  height: 400px;
+  overflow-y: auto;
+}
+
+/* Burbujas */
+.message-bubble {
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+/* Tus mensajes: AZUL */
 .message-bubble.sent {
   align-self: flex-end;
-  background-color: #007bff;
+  background-color: #002d72;
   color: white;
-  border-bottom-right-radius: 2px;
 }
 
-/* Mensajes que RECIBO (Izquierda) */
+/* Mensajes que llegan: GRIS/BLANCO (Asegúrate que no sea transparente) */
 .message-bubble.received {
   align-self: flex-start;
-  background-color: #e9e9eb;
+  background-color: #ffffff;
   color: #333;
-  border-bottom-left-radius: 2px;
-}
-
-/* Hora del mensaje */
-.message-time {
-  font-size: 0.7rem;
-  display: block;
-  margin-top: 5px;
-  opacity: 0.7;
+  border: 1px solid #ddd;
 }

@@ -1,116 +1,121 @@
 /**
- * Controlador Principal del Chat - UCA
- * Gestiona la lógica de la interfaz, el flujo de mensajes y la conexión en tiempo real.
+ * Controlador Principal del Chat - Universidad Católica Americana (UCA)
+ * Orquestador de la interfaz de usuario y la comunicación bidireccional.
  */
 import { getUsers } from "./services/api.js";
 import { chatUI } from "./ui/chatUI.js";
 import { ChatSocket } from "./web/chatSocket.js";
 
-// Estado global de la aplicación en el cliente
+// Estado global de la sesión
 let socket = null;
 let selectedUserId = null;
 let currentUser = JSON.parse(localStorage.getItem("user"));
 
-// Inicialización al cargar el DOM
+/**
+ * Inicialización de la aplicación al cargar el documento
+ */
 document.addEventListener("DOMContentLoaded", async () => {
-  // Verificación de seguridad: si no hay sesión, vuelve al login
   if (!currentUser) return (window.location.href = "login.html");
 
-  // Renderizado del perfil del usuario logueado en el sidebar
+  // Preparar entorno visual inicial
   chatUI.renderCurrentUserInfo(currentUser);
 
-  // Inicialización del túnel de comunicación (WebSocket)
-  socket = new ChatSocket(currentUser.id, (msg) => handleIncoming(msg));
+  // Configuración del WebSocket y manejo de eventos del servidor
+  socket = new ChatSocket(currentUser.id, (data) => {
+    // Gestión de eventos de presencia (Online/Offline)
+    if (data.type === "user_list_update") {
+      chatUI.renderUserList(data.users, currentUser, (user) => openChat(user));
+    }
+
+    // Gestión de mensajería entrante
+    else if (data.type === "new_message") {
+      handleIncoming(data);
+    }
+  });
+
   socket.connect();
 
-  // Carga inicial del directorio de usuarios para mostrar en el sidebar
+  // Carga inicial del directorio de atención
   const users = await getUsers();
   chatUI.renderUserList(users, currentUser, (user) => openChat(user));
 
-  // Configuración de listeners de eventos (clics y teclado)
   setupEvents();
 });
 
 /**
- * Activa la sesión de chat con el usuario seleccionado
- * @param {Object} contact - Información del monitor o estudiante seleccionado
+ * Inicia una sesión de chat con un contacto específico
+ * @param {Object} contact - Datos del usuario seleccionado
  */
 function openChat(contact) {
   selectedUserId = contact.id;
 
-  // Transición de interfaz: de pantalla de bienvenida a chat activo
+  // Gestión de transiciones visuales
   document.getElementById("welcome-screen").style.display = "none";
-  const chatSession = document.getElementById("chat-session");
-  chatSession.style.display = "flex";
+  document.getElementById("chat-session").style.display = "flex";
 
-  // Limpieza del flujo de mensajes para iniciar conversación nueva
+  // Limpieza de pantalla para nueva conversación (Sin historial persistente)
   document.getElementById("messages-display").innerHTML = "";
 
-  // Actualización de la cabecera con el nombre y rol del contacto
+  // Actualización de componentes de la cabecera
   chatUI.updateChatHeader(contact);
 
-  // Foco automático en el campo de texto para agilizar la escritura
+  // Foco automático para mejorar la usabilidad
   document.getElementById("user-input").focus();
 }
 
 /**
- * Gestiona la recepción de mensajes entrantes desde el servidor
- * @param {Object} msg - Datos del mensaje recibido {from, text, time}
+ * Procesa y renderiza mensajes recibidos en tiempo real
+ * @param {Object} msg - Estructura del mensaje {from, text, time}
  */
 function handleIncoming(msg) {
-  // Solo se renderiza el mensaje si el chat de ese usuario está abierto
+  // Solo se muestra el mensaje si corresponde al chat abierto actualmente
   if (selectedUserId === msg.from) {
     chatUI.displayMessage(msg.text, "received");
   } else {
-    // Alerta de sistema en caso de recibir mensajes de otros contactos
-    alert(`Nuevo mensaje institucional de: ${msg.from}`);
+    // Notificación para mensajes de otros usuarios mientras se está en otro chat
+    console.warn(`Mensaje en segundo plano recibido de: ${msg.from}`);
+    alert(`Mensaje institucional nuevo de: ${msg.from}`);
   }
 }
 
 /**
- * Procesa el envío de mensajes desde el cliente hacia el servidor
+ * Captura y envía el mensaje escrito por el usuario
  */
 function send() {
   const input = document.getElementById("user-input");
   const text = input.value.trim();
 
-  // Validación: texto no vacío y destinatario seleccionado
   if (text && selectedUserId) {
-    // Transmisión vía WebSocket
+    // Envío seguro a través del túnel WebSocket
     socket.sendMessage(selectedUserId, text);
 
-    // Renderizado inmediato en la interfaz local
+    // Renderizado local del mensaje enviado
     chatUI.displayMessage(text, "sent");
 
-    // Limpieza del campo de entrada
+    // Reinicio del campo de entrada
     input.value = "";
   }
 }
 
 /**
- * Centraliza la asignación de eventos de usuario
+ * Configuración de escuchas de eventos (Clicks, Enter y Logout)
  */
 function setupEvents() {
   const sendBtn = document.getElementById("send-message-btn");
   const userInput = document.getElementById("user-input");
+  const logoutBtn = document.getElementById("logout-btn");
 
-  // Evento para el botón
-  if (sendBtn) {
-    sendBtn.onclick = send;
-  }
+  if (sendBtn) sendBtn.onclick = send;
 
-  // Evento para la tecla Enter
   if (userInput) {
     userInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
-        e.preventDefault(); // Evita saltos de línea o recargas
+        e.preventDefault();
         send();
       }
     });
   }
 
-  // Logout
-  const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) {
     logoutBtn.onclick = () => {
       localStorage.removeItem("user");
