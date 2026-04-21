@@ -23,6 +23,7 @@ node src/server.js
 El proyecto sigue una arquitectura modular para separar la lógica de negocio de la interfaz:
 
 - **/src**: Núcleo del servidor (Backend).
+  - **/data**: Persistencia de datos institucional (Archivo `users.json` con roles de monitor y estudiante).
   - **/models**: Gestión de datos y persistencia (Archivos JSON).
   - **/routes**: Endpoints de la API para Autenticación y Usuarios.
   - **/web**: Lógica de WebSockets para gestión de presencia y mensajes.
