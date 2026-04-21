@@ -60,7 +60,7 @@
       "rol": "student",
       "studentID": "UCA-88420",
       "faculty": "Facultad de Ingeniería",
-      "status": "online",
+      "status": "offline",
       "lastMessage": "hola",
       "lastMessageTime": "2026-04-21T14:56:27.354Z",
       "attended": false
@@ -119,3 +119,4 @@
     }
   ]
 }
+
