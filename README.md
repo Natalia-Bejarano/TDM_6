@@ -22,21 +22,15 @@ node src/server.js
 
 El proyecto sigue una arquitectura modular para separar la lógica de negocio de la interfaz:
 
-**/src**: Núcleo del servidor (Backend).
+- **/src**: Núcleo del servidor (Backend).
+  - **/models**: Gestión de datos y persistencia (Archivos JSON).
+  - **/routes**: Endpoints de la API para Autenticación y Usuarios.
+  - **/web**: Lógica de WebSockets para gestión de presencia y mensajes.
+  - **/utils**: Herramientas de red y lógica de transmisión (Messaging).
 
-  **/models**: Gestión de datos (JSON).
-  
-  **/routes**: Endpoints de la API (Auth y Usuarios).
-  
-  **/web**: Lógica de WebSockets (Presencia y mensajes).
-  
-  **/utils**: Herramientas de red (Messaging).
-
-**/public**: Activos del cliente (Frontend).
-
-  **/css**: Estilos organizados por componentes (Sidebar, Chat, Global).
-  
-  **/js**: Controladores de la interfaz y conexión al socket.
+- **/public**: Activos del cliente (Frontend).
+  - **/css**: Estilos organizados por componentes (Sidebar, Chat, Global).
+  - **/js**: Controladores de la interfaz y lógica de conexión al socket.
 
 ## Tecnologías utilizadas
 
