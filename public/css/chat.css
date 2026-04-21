@@ -1,0 +1,43 @@
+/* Contenedor de mensajes */
+.messages-display {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 10px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+}
+
+/* Burbuja base */
+.message-bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  position: relative;
+  line-height: 1.4;
+}
+
+/* Mensajes que YO envío (Derecha) */
+.message-bubble.sent {
+  align-self: flex-end;
+  background-color: #007bff;
+  color: white;
+  border-bottom-right-radius: 2px;
+}
+
+/* Mensajes que RECIBO (Izquierda) */
+.message-bubble.received {
+  align-self: flex-start;
+  background-color: #e9e9eb;
+  color: #333;
+  border-bottom-left-radius: 2px;
+}
+
+/* Hora del mensaje */
+.message-time {
+  font-size: 0.7rem;
+  display: block;
+  margin-top: 5px;
+  opacity: 0.7;
+}

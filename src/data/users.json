@@ -1,0 +1,121 @@
+{
+  "users": [
+    {
+      "id": "M001",
+      "name": "Juan Rodríguez",
+      "password": "123",
+      "email": "juan@uca.edu.co",
+      "rol": "monitor",
+      "specialty": "Dudas Administrativas, Matrículas y Pagos",
+      "status": "online",
+      "img": "img/monitors/juan.jpg"
+    },
+    {
+      "id": "M002",
+      "name": "Valentina García",
+      "password": "123",
+      "email": "valentina@uca.edu.co",
+      "rol": "monitor",
+      "specialty": "Consultas Académicas Facultad de Derecho",
+      "status": "online",
+      "img": "img/monitors/valentina.jpg",
+      "lastMessage": "hola",
+      "lastMessageTime": "2026-04-21T14:56:33.693Z"
+    },
+    {
+      "id": "M003",
+      "name": "Andrea Martínez",
+      "password": "123",
+      "email": "andrea@uca.edu.co",
+      "rol": "monitor",
+      "specialty": "Soporte Técnico Plataforma (Moodle)",
+      "status": "online",
+      "img": "img/monitors/andrea.jpg"
+    },
+    {
+      "id": "M004",
+      "name": "Mateo Salamanca",
+      "password": "123",
+      "email": "mateo@uca.edu.co",
+      "rol": "monitor",
+      "specialty": "Consultas Académicas Ciencias Económicas",
+      "status": "online",
+      "img": "img/monitors/mateo.jpg"
+    },
+    {
+      "id": "M005",
+      "name": "Camilo Torres",
+      "password": "123",
+      "email": "camilo@uca.edu.co",
+      "rol": "monitor",
+      "specialty": "Bienestar Universitario y Becas",
+      "status": "offline",
+      "img": "img/monitors/camilo.jpg"
+    },
+    {
+      "id": "S001",
+      "name": "Carlos Mendoza",
+      "password": "123",
+      "email": "carlos@uca.edu.co",
+      "rol": "student",
+      "studentID": "UCA-88420",
+      "faculty": "Facultad de Ingeniería",
+      "status": "online",
+      "lastMessage": "hola",
+      "lastMessageTime": "2026-04-21T14:56:27.354Z",
+      "attended": false
+    },
+    {
+      "id": "S002",
+      "name": "Lucia Torres",
+      "password": "123",
+      "email": "lucia@uca.edu.co",
+      "rol": "student",
+      "studentID": "UCA-88421",
+      "faculty": "Facultad de Ingeniería",
+      "status": "online",
+      "lastMessage": "Saben algo de la homologación...",
+      "lastMessageTime": "2026-04-20T10:12:00Z",
+      "attended": false
+    },
+    {
+      "id": "S003",
+      "name": "Roberto Gomez",
+      "password": "123",
+      "email": " oberto@uca.edu.co",
+      "rol": "student",
+      "studentID": "UCA-88422",
+      "faculty": "Facultad de Ingeniería",
+      "status": "online",
+      "lastMessage": "No puedo acceder al aula virtual.",
+      "lastMessageTime": "2026-04-20T10:18:00Z",
+      "attended": false
+    },
+    {
+      "id": "S004",
+      "name": "Mariana Lopez",
+      "password": "123",
+      "email": "mariana@uca.edu.co",
+      "rol": "student",
+      "studentID": "UCA-55210",
+      "faculty": "Ciencias Económicas",
+      "status": "online",
+      "lastMessage": "Quedo pendiente del envío del comprobante...",
+      "lastMessageTime": "2026-04-20T10:19:00Z",
+      "attended": true
+    },
+    {
+      "id": "S005",
+      "name": "Sofia Herrera",
+      "password": "123",
+      "email": "sofia@uca.edu.co",
+      "rol": "student",
+      "studentID": "UCA-11234",
+      "faculty": "Derecho y Ciencias Políticas",
+      "status": "offline",
+      "lastMessage": "Gracias por la información.",
+      "lastMessageTime": "2026-04-19T16:00:00Z",
+      "attended": true
+    }
+  ]
+}

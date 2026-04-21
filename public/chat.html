@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UCA - Sistema de Chat</title>
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
+    <link rel="stylesheet" href="css/chat.css" />
+  </head>
+  <body>
+    <div class="app-layout">
+      <aside class="directory-container">
+        <header class="directory-header">
+          <div class="user-profile-header" id="current-user-info"></div>
+          <input
+            type="text"
+            id="search-contact"
+            placeholder="Buscar contacto..."
+          />
+        </header>
+
+        <div id="contact-list" class="contact-list"></div>
+
+        <footer class="sidebar-footer">
+          <button id="logout-btn" class="logout-link">Cerrar Sesión</button>
+        </footer>
+      </aside>
+
+      <main class="chat-main">
+        <div id="welcome-screen" class="empty-state">
+          <div class="clock-icon">💬</div>
+          <h2 id="welcome-title">Cargando...</h2>
+          <p id="welcome-msg">Seleccione una conversación para comenzar.</p>
+        </div>
+
+        <div id="chat-session" class="chat-session" style="display: none">
+          <header class="chat-header">
+            <div id="active-contact-info" class="active-contact-info"></div>
+            <button id="close-chat" class="back-btn">← Volver</button>
+          </header>
+
+          <div id="messages-display" class="messages-display"></div>
+
+          <footer class="chat-input-area">
+            <input
+              type="text"
+              id="user-input"
+              placeholder="Escribe un mensaje..."
+              autocomplete="off"
+            />
+            <button id="send-message-btn">➤</button>
+          </footer>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="js/chat.js"></script>
+  </body>
+</html>
