@@ -2,7 +2,7 @@
  * Servidor Principal - Universidad Católica Americana (UCA)
  * Punto de entrada central que integra protocolos HTTP y WebSocket.
  */
-
+const { getUsers, saveUsers } = require("./models/users"); // Asegúrate de importar estas
 const http = require("http");
 const fs = require("fs/promises");
 const path = require("path");
@@ -105,9 +105,22 @@ const server = http.createServer(async (req, res) => {
 const wss = new WebSocket.Server({ server });
 setupChat(wss);
 
-// Activación del puerto de escucha
-server.listen(PORT, () => {
-  console.log(
-    `🚀 Sistema Institucional UCA activo en http://localhost:${PORT}`,
-  );
+async function initializeDatabase() {
+  try {
+    const users = await getUsers();
+    const cleanUsers = users.map((u) => ({ ...u, status: "offline" }));
+    await saveUsers(cleanUsers);
+    console.log("✔️ Estados de presencia reiniciados exitosamente.");
+  } catch (err) {
+    console.error("❌ Fallo en la inicialización de base de datos:", err);
+  }
+}
+
+// Inicializar y luego encender el servidor
+initializeDatabase().then(() => {
+  server.listen(PORT, () => {
+    console.log(
+      `🚀 Sistema Institucional UCA activo en http://localhost:${PORT}`,
+    );
+  });
 });
