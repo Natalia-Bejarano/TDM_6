@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <!-- Configuración básica del documento -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UCA - Perfil de Usuario</title>
+
+    <!-- Hojas de estilos del proyecto -->
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
+    <link rel="stylesheet" href="css/profile.css" />
+  </head>
+
+  <body>
+    <!-- Contenedor principal de la página de perfil -->
+    <div class="profile-layout">
+
+      <!-- Barra lateral izquierda del perfil -->
+      <aside class="profile-sidebar">
+
+        <!-- Logo institucional -->
+        <div class="profile-logo-box">
+          <img src="img/logo-uca.png" alt="Logo UCA" class="profile-logo" />
+          <h2>UCA</h2>
+        </div>
+
+        <!-- Navegación interna del perfil -->
+        <nav class="profile-nav">
+          <a href="chat.html">Mis chats</a>
+          <a href="profile.html" class="active">Configuración</a>
+        </nav>
+
+        <!-- Información resumida del usuario en la parte inferior -->
+        <div class="profile-user-bottom">
+          <img id="sidebar-avatar" src="img/default.jpg" alt="Usuario" />
+          <strong id="sidebar-name">Usuario</strong>
+        </div>
+      </aside>
+
+      <!-- Contenido principal de configuración -->
+      <main class="profile-main">
+
+        <!-- Botón para volver al chat -->
+        <button id="back-to-chat" class="profile-back-btn">←</button>
+
+        <!-- Encabezado de la página -->
+        <section class="profile-header">
+          <h1>Configuración de Cuenta</h1>
+          <p>
+            Administre su perfil profesional, preferencias de notificación y datos
+            visibles dentro del sistema.
+          </p>
+        </section>
+
+        <!-- Resumen visual del perfil del usuario -->
+        <section class="profile-summary">
+          <img id="profile-avatar" src="img/default.jpg" alt="Foto de perfil" />
+
+          <div class="profile-summary-info">
+            <h2 id="profile-name-title">Usuario</h2>
+
+            <!-- Rol del usuario dentro del sistema -->
+            <div>
+              <strong>Cargo / Rol</strong>
+              <span id="profile-role">Usuario institucional</span>
+            </div>
+
+            <!-- Unidad académica o área del usuario -->
+            <div>
+              <strong>Unidad Académica</strong>
+              <span id="profile-unit">Universidad Católica Americana</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tarjetas de configuración -->
+        <section class="profile-cards">
+
+          <!-- Formulario para editar información del perfil -->
+          <form id="profile-form" class="profile-card">
+            <h3>Perfil Profesional</h3>
+            <p>
+              Esta información será visible para los estudiantes durante las
+              sesiones de chat.
+            </p>
+
+            <label for="profile-name-input">Nombre para mostrar</label>
+            <input id="profile-name-input" type="text" required />
+
+            <label for="profile-unit-input">Unidad Académica</label>
+            <input id="profile-unit-input" type="text" />
+
+            <button type="submit">Guardar</button>
+
+            <!-- Mensaje de confirmación o error -->
+            <p id="profile-message" class="profile-message"></p>
+          </form>
+
+          <!-- Tarjeta de preferencias de notificaciones -->
+          <section class="profile-card">
+            <h3>Notificaciones</h3>
+
+            <div class="notification-row">
+              <span>Alertas sonoras para nuevos chats entrantes.</span>
+              <input id="sound-alerts" type="checkbox" checked />
+            </div>
+
+            <div class="notification-row">
+              <span>Notificaciones de escritorio.</span>
+              <input id="desktop-alerts" type="checkbox" />
+            </div>
+
+            <div class="notification-row">
+              <span>Aviso de estudiante en espera.</span>
+              <input id="waiting-alerts" type="checkbox" checked />
+            </div>
+
+            <button id="save-notifications" type="button">Guardar</button>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <!-- Script que carga y guarda la información del perfil -->
+    <script type="module" src="js/profile.js"></script>
+  </body>
+</html>
