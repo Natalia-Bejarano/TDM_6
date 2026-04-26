@@ -16,6 +16,16 @@ let currentUser = JSON.parse(localStorage.getItem("user"));
 let allUsers = [];
 let socketStatus = "disconnected";
 
+// Validación nueva: bloquea etiquetas HTML sospechosas
+function hasUnsafeHtml(value) {
+  return /<\/?[a-z][\s\S]*>/i.test(value);
+}
+
+// Validación nueva: bloquea caracteres de control no visibles
+function hasControlCharacters(value) {
+  return /[\u0000-\u001F\u007F]/.test(value);
+}
+
 /**
  * Actualiza el estado del botón de enviar y del campo de texto.
  * Solo permite escribir si hay usuario seleccionado, está disponible y el socket está conectado.
@@ -52,6 +62,12 @@ function renderContacts(users = allUsers) {
  */
 function filterContacts(searchText) {
   const term = searchText.trim().toLowerCase();
+
+  // Validación nueva: ignora búsquedas demasiado largas o con caracteres riesgosos
+  if (term.length > 80 || hasUnsafeHtml(term) || hasControlCharacters(term)) {
+    renderContacts([]);
+    return;
+  }
 
   if (!term) {
     renderContacts(allUsers);
@@ -240,6 +256,24 @@ function send() {
   if (!socket?.isConnected()) {
     alert("No hay conexión con el servidor de chat.");
     updateSendButtonState();
+    return;
+  }
+
+  // Validación nueva: impide enviar mensajes vacíos
+  if (!text) {
+    alert("Escriba un mensaje antes de enviarlo.");
+    return;
+  }
+
+  // Validación nueva: limita el tamaño del mensaje
+  if (text.length > 500) {
+    alert("El mensaje no debe superar 500 caracteres.");
+    return;
+  }
+
+  // Validación nueva: evita contenido HTML o caracteres invisibles en el mensaje
+  if (hasUnsafeHtml(text) || hasControlCharacters(text)) {
+    alert("El mensaje contiene caracteres no permitidos.");
     return;
   }
 

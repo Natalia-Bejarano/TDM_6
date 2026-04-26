@@ -35,6 +35,19 @@ const desktopAlerts = document.getElementById("desktop-alerts");
 const waitingAlerts = document.getElementById("waiting-alerts");
 const saveNotificationsBtn = document.getElementById("save-notifications");
 
+// Validación nueva: permite nombres comunes con acentos, espacios y signos básicos
+const namePattern = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ .'-]+$/;
+
+// Validación nueva: bloquea etiquetas HTML sospechosas
+function hasUnsafeHtml(value) {
+  return /<\/?[a-z][\s\S]*>/i.test(value);
+}
+
+// Validación nueva: bloquea caracteres de control no visibles
+function hasControlCharacters(value) {
+  return /[\u0000-\u001F\u007F]/.test(value);
+}
+
 /**
  * Convierte el rol interno del usuario en un texto visible para la interfaz.
  */
@@ -105,6 +118,41 @@ profileForm.addEventListener("submit", (event) => {
   // Validación básica para no guardar un nombre vacío
   if (!newName) {
     profileMessage.textContent = "El nombre no puede estar vacío.";
+    profileMessage.className = "profile-message error";
+    return;
+  }
+
+  // Validación nueva: limita la longitud del nombre visible
+  if (newName.length < 2 || newName.length > 60) {
+    profileMessage.textContent = "El nombre debe tener entre 2 y 60 caracteres.";
+    profileMessage.className = "profile-message error";
+    return;
+  }
+
+  // Validación nueva: evita símbolos no permitidos en el nombre
+  if (!namePattern.test(newName)) {
+    profileMessage.textContent = "El nombre solo puede contener letras, espacios y signos básicos.";
+    profileMessage.className = "profile-message error";
+    return;
+  }
+
+  // Validación nueva: evita contenido HTML o caracteres invisibles en el nombre
+  if (hasUnsafeHtml(newName) || hasControlCharacters(newName)) {
+    profileMessage.textContent = "El nombre contiene caracteres no permitidos.";
+    profileMessage.className = "profile-message error";
+    return;
+  }
+
+  // Validación nueva: limita la longitud de la unidad académica
+  if (newUnit.length > 80) {
+    profileMessage.textContent = "La unidad académica no debe superar 80 caracteres.";
+    profileMessage.className = "profile-message error";
+    return;
+  }
+
+  // Validación nueva: evita contenido HTML o caracteres invisibles en la unidad académica
+  if (newUnit && (hasUnsafeHtml(newUnit) || hasControlCharacters(newUnit))) {
+    profileMessage.textContent = "La unidad académica contiene caracteres no permitidos.";
     profileMessage.className = "profile-message error";
     return;
   }

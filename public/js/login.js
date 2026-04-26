@@ -9,6 +9,19 @@ import {
 // Referencia al formulario de inicio de sesión en el DOM
 const loginForm = document.getElementById("loginForm");
 
+// Validación nueva: formato básico de correo y longitud segura
+const emailPattern = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
+
+// Validación nueva: bloquea etiquetas HTML sospechosas
+function hasUnsafeHtml(value) {
+  return /<\/?[a-z][\s\S]*>/i.test(value);
+}
+
+// Validación nueva: bloquea caracteres de control no visibles
+function hasControlCharacters(value) {
+  return /[\u0000-\u001F\u007F]/.test(value);
+}
+
 // Manejo del evento de envío para procesar la autenticación
 loginForm.addEventListener("submit", async function (e) {
   e.preventDefault();
@@ -24,6 +37,30 @@ loginForm.addEventListener("submit", async function (e) {
     // Validación de integridad: campos obligatorios
     if (!email || !password) {
       showError("Debes ingresar tu correo institucional y contraseña");
+      return;
+    }
+
+    // Validación nueva: evita correos con formato inválido o demasiado extensos
+    if (!emailPattern.test(email) || email.length > 120) {
+      showError("Ingresa un correo válido.");
+      return;
+    }
+
+    // Validación nueva: evita contenido HTML o caracteres invisibles en el correo
+    if (hasUnsafeHtml(email) || hasControlCharacters(email)) {
+      showError("El correo contiene caracteres no permitidos.");
+      return;
+    }
+
+    // Validación nueva: limita la contraseña sin romper credenciales existentes
+    if (password.length > 64) {
+      showError("La contraseña no debe superar 64 caracteres.");
+      return;
+    }
+
+    // Validación nueva: evita contenido HTML o caracteres invisibles en la contraseña
+    if (hasUnsafeHtml(password) || hasControlCharacters(password)) {
+      showError("La contraseña contiene caracteres no permitidos.");
       return;
     }
 
