@@ -75,7 +75,7 @@ const server = http.createServer(async (req, res) => {
     // --- GESTIÓN DE ARCHIVOS ESTÁTICOS (FRONTEND) ---
     const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
     let pathname =
-      parsedUrl.pathname === "/" ? "/login.html" : parsedUrl.pathname;
+      parsedUrl.pathname === "/" ? "/home.html" : parsedUrl.pathname;
     const ext = path.extname(pathname);
     const fullPath = path.join(PUBLIC_PATH, pathname);
 
