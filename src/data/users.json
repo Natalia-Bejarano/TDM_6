@@ -17,7 +17,7 @@
       "email": "valentina@uca.edu.co",
       "rol": "monitor",
       "specialty": "Consultas Académicas Facultad de Derecho",
-      "status": "offline",
+      "status": "online",
       "img": "img/monitors/valentina.jpg",
       "lastMessage": "hola",
       "lastMessageTime": "2026-04-21T14:56:33.693Z"
@@ -60,7 +60,7 @@
       "rol": "student",
       "studentID": "UCA-88420",
       "faculty": "Facultad de Ingeniería",
-      "status": "offline",
+      "status": "online",
       "lastMessage": "hola",
       "lastMessageTime": "2026-04-21T14:56:27.354Z",
       "attended": false
