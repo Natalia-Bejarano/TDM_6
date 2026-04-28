@@ -1,21 +1,13 @@
 const { getUsers, saveUsers } = require("../models/users");
 const { OAuth2Client } = require("google-auth-library");
 require("dotenv").config();
-console.log("DEBUG - ID de Google:", process.env.GOOGLE_CLIENT_ID);
-console.log(
-  "DEBUG - Secreto de Google:",
-  process.env.GOOGLE_CLIENT_SECRET ? "Cargado correctamente" : "No encontrado",
-);
-// Configuración del cliente de Google
+
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
   process.env.GOOGLE_REDIRECT_URI,
 );
-/**
- * Controlador de Autenticación - UCA
- * Soporta login tradicional y Google OAuth 2.0
- */
+
 async function handleAuthRoutes(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
 
@@ -23,6 +15,7 @@ async function handleAuthRoutes(req, res) {
   if (url.pathname === "/auth/google" && req.method === "GET") {
     const authorizeUrl = client.generateAuthUrl({
       access_type: "offline",
+      prompt: "select_account", // Forzamos a que siempre pueda elegir cuenta
       scope: [
         "https://www.googleapis.com/auth/userinfo.profile",
         "https://www.googleapis.com/auth/userinfo.email",
@@ -38,74 +31,62 @@ async function handleAuthRoutes(req, res) {
   if (url.pathname === "/auth/google/callback" && req.method === "GET") {
     try {
       const code = url.searchParams.get("code");
+      if (!code) throw new Error("No se recibió el código de Google");
+
+      // Intercambio de código por tokens (Aquí daba el ETIMEDOUT)
       const { tokens } = await client.getToken(code);
       client.setCredentials(tokens);
 
-      // Verificamos el token y obtenemos los datos de Google
       const ticket = await client.verifyIdToken({
         idToken: tokens.id_token,
         audience: process.env.GOOGLE_CLIENT_ID,
       });
-      const payload = ticket.getPayload(); // Aquí está el email y nombre
+      const payload = ticket.getPayload();
 
-      // Buscamos al usuario en nuestra "base de datos" (JSON)
       let users = await getUsers();
       let userIndex = users.findIndex((u) => u.email === payload.email);
 
-      if (userIndex !== -1) {
-        console.log(
-          `✅ Google Match: Encontrado usuario ${users[userIndex].name} para el correo ${payload.email}`,
-        );
-      } else {
-        console.warn(
-          `❌ Google No-Match: El correo ${payload.email} no está en el JSON`,
-        );
-      }
+      // CASO A: El usuario NO existe en el JSON
       if (userIndex === -1) {
-        // OPCIONAL: Si no existe, podrías crearlo aquí o lanzar error
-        // Por ahora, redirigimos al login con un error
-        res.writeHead(302, {
-          // ELIMINAMOS 'HttpOnly'. Dejamos solo Path y Max-Age.
-          "Set-Cookie": `loggedUser=${encodeURIComponent(JSON.stringify(loggedUser))}; Path=/; Max-Age=3600`,
-          Location: "/chat.html",
-        });
+        console.warn(
+          `❌ Google No-Match: ${payload.email} no está autorizado.`,
+        );
+        // Redirigimos al login con un mensaje claro. ¡No lo dejamos pasar al chat!
+        res.writeHead(302, { Location: "/login.html?error=user_not_found" });
         res.end();
         return true;
       }
 
-      // Login exitoso: Marcamos como online
+      // CASO B: Usuario encontrado (Adriana)
+      console.log(`✅ Google Match: ${users[userIndex].name}`);
+
       users[userIndex].status = "online";
       await saveUsers(users);
 
       const loggedUser = { ...users[userIndex] };
       delete loggedUser.password;
 
-      // Enviamos el usuario al frontend mediante una Cookie temporal
-      // (Porque una redirección 302 no permite enviar JSON en el cuerpo)
+      // Usamos encodeURIComponent para evitar errores con tildes (Flórez)
+      const cookieData = encodeURIComponent(JSON.stringify(loggedUser));
+
       res.writeHead(302, {
-        "Set-Cookie": `loggedUser=${JSON.stringify(loggedUser)}; Path=/; Max-Age=3600`,
+        "Set-Cookie": `loggedUser=${cookieData}; Path=/; Max-Age=3600`,
         Location: "/chat.html",
       });
       res.end();
     } catch (err) {
-      console.error("Error en Callback de Google:", err);
-      res.writeHead(302, { Location: "/login.html?error=auth_failed" });
+      console.error("❌ Error crítico en Callback de Google:", err.message);
+      // Si hay timeout o error de Google, volvemos al login de forma segura
+      res.writeHead(302, { Location: "/login.html?error=google_timeout" });
       res.end();
     }
     return true;
   }
 
-  // --- 3. RUTA: LOGIN TRADICIONAL (Tu código original) ---
+  // --- 3. RUTA: LOGIN TRADICIONAL ---
   if (req.url.startsWith("/api/login") && req.method === "POST") {
     try {
       const { email, password } = req.body;
-
-      if (!email || !password) {
-        res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: "Email y contraseña requeridos" }));
-        return true;
-      }
-
       const users = await getUsers();
       const userIndex = users.findIndex(
         (u) => u.email === email && u.password === password,
@@ -126,9 +107,8 @@ async function handleAuthRoutes(req, res) {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ message: "Login exitoso", user: loggedUser }));
     } catch (err) {
-      console.error("Error en módulo de Autenticación:", err);
       res.writeHead(500, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Error interno del servidor" }));
+      res.end(JSON.stringify({ error: "Error interno" }));
     }
     return true;
   }
