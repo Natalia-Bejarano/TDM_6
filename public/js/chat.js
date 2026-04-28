@@ -1,34 +1,77 @@
 /**
  * Controlador Principal del Chat - Universidad Católica Americana (UCA)
- * Orquestador de la interfaz de usuario y la comunicación bidireccional.
+ * Orquestador de la interfaz de usuario y la comunicación bidireccional con Google OAuth.
  */
 import { getUsers } from "./services/api.js";
 import { chatUI } from "./ui/chatUI.js";
 import { ChatSocket } from "./web/chatSocket.js";
 
-// Estado global de la sesión
+// --- 1. GESTIÓN DE SESIÓN (ESTADO INICIAL) ---
+let currentUser = null;
+
+/**
+ * Sincronizador de Sesión: Prioridad Máxima
+ * Revisa si venimos de Google (Cookie) o si ya hay sesión local.
+ */
+const initSession = () => {
+  // Primero: Revisar si el servidor nos mandó una cookie (Login de Google)
+  const cookies = document.cookie.split("; ");
+  const userCookie = cookies.find((row) => row.startsWith("loggedUser="));
+
+  if (userCookie) {
+    try {
+      const userData = JSON.parse(decodeURIComponent(userCookie.split("=")[1]));
+
+      // Limpieza de seguridad: Borramos rastros de usuarios anteriores (ej. Roberto)
+      localStorage.removeItem("user");
+
+      // Guardamos la nueva sesión (ej. Adriana)
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      // Expiramos la cookie para que no se repita el proceso al refrescar
+      document.cookie =
+        "loggedUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+      console.log("✅ Sesión de Google sincronizada para:", userData.name);
+    } catch (e) {
+      console.error("❌ Error procesando sesión de Google:", e);
+    }
+  }
+
+  // Segundo: Definir el usuario actual desde el almacenamiento final
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  // Si después de buscar en cookie y localStorage no hay nadie, expulsar al login
+  if (!user) {
+    console.warn("⚠️ Usuario no autenticado. Redirigiendo...");
+    window.location.href = "login.html";
+    return null;
+  }
+
+  return user;
+};
+
+// EJECUCIÓN DE IDENTIDAD
+currentUser = initSession();
+
+// --- 2. ESTADO GLOBAL DE LA APP ---
 let socket = null;
 let selectedUserId = null;
 let selectedUser = null;
-let currentUser = JSON.parse(localStorage.getItem("user"));
-
-// estado local para usuarios, búsqueda y conexión
 let allUsers = [];
 let socketStatus = "disconnected";
 
-// Validación nueva: bloquea etiquetas HTML sospechosas
+// --- 3. FUNCIONES DE VALIDACIÓN Y SEGURIDAD ---
 function hasUnsafeHtml(value) {
   return /<\/?[a-z][\s\S]*>/i.test(value);
 }
 
-// Validación nueva: bloquea caracteres de control no visibles
 function hasControlCharacters(value) {
   return /[\u0000-\u001F\u007F]/.test(value);
 }
 
 /**
  * Actualiza el estado del botón de enviar y del campo de texto.
- * Solo permite escribir si hay usuario seleccionado, está disponible y el socket está conectado.
  */
 function updateSendButtonState() {
   const sendBtn = document.getElementById("send-message-btn");
@@ -50,20 +93,15 @@ function updateSendButtonState() {
   }
 }
 
-/**
- * Renderiza la lista de contactos usando el módulo visual chatUI.
- */
+// --- 4. GESTIÓN DE CONTACTOS Y FILTROS ---
+
 function renderContacts(users = allUsers) {
   chatUI.renderUserList(users, currentUser, (user) => openChat(user));
 }
 
-/**
- * Filtra contactos por nombre, facultad, especialidad o rol.
- */
 function filterContacts(searchText) {
   const term = searchText.trim().toLowerCase();
 
-  // Validación nueva: ignora búsquedas demasiado largas o con caracteres riesgosos
   if (term.length > 80 || hasUnsafeHtml(term) || hasControlCharacters(term)) {
     renderContacts([]);
     return;
@@ -91,10 +129,6 @@ function filterContacts(searchText) {
   renderContacts(filtered);
 }
 
-/**
- * Actualiza los datos del usuario seleccionado usando la lista más reciente del servidor.
- * Esto sirve para detectar si el contacto se desconectó mientras el chat estaba abierto.
- */
 function refreshSelectedUserFromList() {
   if (!selectedUserId) return;
 
@@ -103,33 +137,25 @@ function refreshSelectedUserFromList() {
 
   selectedUser = updatedUser;
   chatUI.updateChatHeader(selectedUser);
-
-  if (!chatUI.isUserAvailable(selectedUser)) {
-    alert(`${selectedUser.name} ya no está disponible.`);
-  }
-
   updateSendButtonState();
 }
 
+// --- 5. LÓGICA DE COMUNICACIÓN (WEBSOCKET) ---
 
 /**
  * Inicialización de la aplicación al cargar el documento
  */
 document.addEventListener("DOMContentLoaded", async () => {
-  // Si no hay usuario en sesión, se redirige al login
-  if (!currentUser) return (window.location.href = "login.html");
+  // Si currentUser es null (porque initSession falló), no hacemos nada
+  if (!currentUser) return;
 
-  // Renderiza la información del usuario actual en la barra lateral
+  // Renderiza la información del usuario actual (Adriana)
   chatUI.renderCurrentUserInfo(currentUser);
-
-  // Desactiva inicialmente el input hasta que se seleccione un contacto válido
   updateSendButtonState();
 
-  // WebSocket con callback de mensajes y callback de estado
+  // Configuración del Socket
   socket = new ChatSocket(
     currentUser.id,
-
-    // Callback que recibe eventos enviados por el servidor
     (data) => {
       if (data.type === "user_list_update") {
         allUsers = data.users;
@@ -139,8 +165,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         handleIncoming(data);
       }
     },
-
-    // Callback que actualiza el estado de conexión del WebSocket
     (status) => {
       socketStatus = status;
       chatUI.updateConnectionStatus(status);
@@ -148,29 +172,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     },
   );
 
-  // Inicia la conexión WebSocket
   socket.connect();
 
   try {
-    // Carga inicial del directorio de usuarios
     allUsers = await getUsers();
     renderContacts(allUsers);
   } catch (error) {
     console.error("Error cargando usuarios:", error);
-    alert("No se pudo cargar el directorio de usuarios.");
   }
 
-  // Configura botones, buscador, enter y logout
   setupEvents();
 });
 
+// --- 6. EVENTOS DE INTERFAZ ---
 
-/**
- * Inicia una sesión de chat con un contacto específico
- * @param {Object} contact - Datos del usuario seleccionado
- */
 function openChat(contact) {
-  // Evita abrir chat con usuarios no disponibles
   if (!chatUI.isUserAvailable(contact)) {
     alert(`${contact.name} no está disponible en este momento.`);
     return;
@@ -179,147 +195,69 @@ function openChat(contact) {
   selectedUserId = contact.id;
   selectedUser = contact;
 
-  // Oculta la pantalla de bienvenida y muestra la conversación
   document.getElementById("welcome-screen").style.display = "none";
   document.getElementById("chat-session").style.display = "flex";
-
-  // Limpia los mensajes anteriores porque no hay historial persistente
   document.getElementById("messages-display").innerHTML = "";
 
-  // Actualiza la cabecera del chat con el contacto seleccionado
   chatUI.updateChatHeader(contact);
-
-  // Enfoca el campo de texto para escribir de inmediato
   document.getElementById("user-input").focus();
-
   updateSendButtonState();
 }
 
-
-// INICIO MODIFICACION FRONTEND: cerrar conversación activa sin cerrar sesión
 function closeChat() {
   selectedUserId = null;
   selectedUser = null;
-
-  const welcomeScreen = document.getElementById("welcome-screen");
-  const chatSession = document.getElementById("chat-session");
-  const messagesDisplay = document.getElementById("messages-display");
-
-  if (welcomeScreen) welcomeScreen.style.display = "flex";
-  if (chatSession) chatSession.style.display = "none";
-  if (messagesDisplay) messagesDisplay.innerHTML = "";
-
+  document.getElementById("welcome-screen").style.display = "flex";
+  document.getElementById("chat-session").style.display = "none";
   updateSendButtonState();
 }
 
-
-/**
- * Procesa y renderiza mensajes recibidos en tiempo real
- * @param {Object} msg - Estructura del mensaje {from, text, time}
- */
 function handleIncoming(msg) {
-  // Si el mensaje pertenece al chat abierto, se muestra en pantalla
   if (selectedUserId === msg.from) {
     chatUI.displayMessage(msg.text, "received");
   } else {
-    // Si viene de otro usuario, muestra alerta básica
     const sender = allUsers.find((user) => user.id === msg.from);
-    const senderName = sender?.name || msg.from;
-
-    console.warn(`Mensaje en segundo plano recibido de: ${senderName}`);
-    alert(`Mensaje institucional nuevo de: ${senderName}`);
+    alert(`Mensaje institucional nuevo de: ${sender?.name || "un monitor"}`);
   }
 }
 
-
-/**
- * Captura y envía el mensaje escrito por el usuario
- */
 function send() {
   const input = document.getElementById("user-input");
   const text = input.value.trim();
 
-  // Valida que exista un contacto seleccionado
-  if (!selectedUserId || !selectedUser) {
-    alert("Seleccione un contacto para iniciar el chat.");
+  if (
+    !text ||
+    text.length > 500 ||
+    hasUnsafeHtml(text) ||
+    hasControlCharacters(text)
+  )
     return;
-  }
 
-  // Valida que el contacto siga disponible
-  if (!chatUI.isUserAvailable(selectedUser)) {
-    alert(`${selectedUser.name} no está disponible en este momento.`);
-    updateSendButtonState();
-    return;
-  }
-
-  // Valida que el WebSocket esté conectado antes de enviar
-  if (!socket?.isConnected()) {
-    alert("No hay conexión con el servidor de chat.");
-    updateSendButtonState();
-    return;
-  }
-
-  // Validación nueva: impide enviar mensajes vacíos
-  if (!text) {
-    alert("Escriba un mensaje antes de enviarlo.");
-    return;
-  }
-
-  // Validación nueva: limita el tamaño del mensaje
-  if (text.length > 500) {
-    alert("El mensaje no debe superar 500 caracteres.");
-    return;
-  }
-
-  // Validación nueva: evita contenido HTML o caracteres invisibles en el mensaje
-  if (hasUnsafeHtml(text) || hasControlCharacters(text)) {
-    alert("El mensaje contiene caracteres no permitidos.");
-    return;
-  }
-
-  if (text) {
+  if (socket?.isConnected() && selectedUserId) {
     const wasSent = socket.sendMessage(selectedUserId, text);
-
-    if (!wasSent) {
-      alert("No se pudo enviar el mensaje. Intente nuevamente.");
-      return;
+    if (wasSent) {
+      chatUI.displayMessage(text, "sent");
+      input.value = "";
     }
-
-    // Muestra el mensaje enviado en la pantalla del usuario actual
-    chatUI.displayMessage(text, "sent");
-
-    // Limpia el campo de texto después de enviar
-    input.value = "";
   }
 }
 
-
-/**
- * Configuración de escuchas de eventos: clicks, Enter, buscador y logout
- */
 function setupEvents() {
   const sendBtn = document.getElementById("send-message-btn");
   const userInput = document.getElementById("user-input");
   const logoutBtn = document.getElementById("logout-btn");
-
-  // Buscador de contactos y botón volver
   const searchInput = document.getElementById("search-contact");
   const closeChatBtn = document.getElementById("close-chat");
 
   if (searchInput) {
-    searchInput.addEventListener("input", (e) => {
-      filterContacts(e.target.value);
-    });
+    searchInput.addEventListener("input", (e) =>
+      filterContacts(e.target.value),
+    );
   }
 
-  if (closeChatBtn) {
-    closeChatBtn.onclick = closeChat;
-  }
-
-  // Envía mensaje al hacer clic en el botón
+  if (closeChatBtn) closeChatBtn.onclick = closeChat;
   if (sendBtn) sendBtn.onclick = send;
 
-  // Envía mensaje al presionar Enter
   if (userInput) {
     userInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
@@ -329,14 +267,11 @@ function setupEvents() {
     });
   }
 
-  // Cierra sesión, limpia localStorage y vuelve al login
   if (logoutBtn) {
     logoutBtn.onclick = () => {
       if (socket) socket.disconnect();
-      localStorage.removeItem("user");
+      localStorage.clear();
       window.location.href = "login.html";
     };
   }
-
-  updateSendButtonState();
 }

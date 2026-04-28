@@ -6,76 +6,94 @@ import {
   redirectToChat,
 } from "./ui/loginUI.js";
 
-// Referencia al formulario de inicio de sesión en el DOM
+// --- REFERENCIAS AL DOM ---
 const loginForm = document.getElementById("loginForm");
+const googleBtn = document.querySelector(".btn-google"); // Seleccionamos el botón de Google
 
-// Validación nueva: formato básico de correo y longitud segura
+// --- CONFIGURACIÓN DE VALIDACIONES ---
 const emailPattern = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
 
-// Validación nueva: bloquea etiquetas HTML sospechosas
 function hasUnsafeHtml(value) {
   return /<\/?[a-z][\s\S]*>/i.test(value);
 }
 
-// Validación nueva: bloquea caracteres de control no visibles
 function hasControlCharacters(value) {
   return /[\u0000-\u001F\u007F]/.test(value);
 }
 
-// Manejo del evento de envío para procesar la autenticación
+// --- MANEJO DE LOGIN TRADICIONAL (EMAIL/PASSWORD) ---
 loginForm.addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  // Obtención y limpieza de credenciales desde el HTML
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
-  // Reinicio de alertas de error en la interfaz
   clearError();
 
   try {
-    // Validación de integridad: campos obligatorios
+    // Validaciones de integridad
     if (!email || !password) {
       showError("Debes ingresar tu correo institucional y contraseña");
       return;
     }
 
-    // Validación nueva: evita correos con formato inválido o demasiado extensos
     if (!emailPattern.test(email) || email.length > 120) {
       showError("Ingresa un correo válido.");
       return;
     }
 
-    // Validación nueva: evita contenido HTML o caracteres invisibles en el correo
     if (hasUnsafeHtml(email) || hasControlCharacters(email)) {
       showError("El correo contiene caracteres no permitidos.");
       return;
     }
 
-    // Validación nueva: limita la contraseña sin romper credenciales existentes
-    if (password.length > 64) {
-      showError("La contraseña no debe superar 64 caracteres.");
+    if (
+      password.length > 64 ||
+      hasUnsafeHtml(password) ||
+      hasControlCharacters(password)
+    ) {
+      showError(
+        "La contraseña contiene caracteres no permitidos o es muy larga.",
+      );
       return;
     }
 
-    // Validación nueva: evita contenido HTML o caracteres invisibles en la contraseña
-    if (hasUnsafeHtml(password) || hasControlCharacters(password)) {
-      showError("La contraseña contiene caracteres no permitidos.");
-      return;
-    }
-
-    // Consumo del servicio de autenticación vía API
+    // Petición a la API (Login tradicional)
     const data = await login(email, password);
-
-    // Persistencia del perfil de usuario (ID, Rol, Datos) en LocalStorage
-    // Esto permite que chat.js personalice la experiencia según el rol
     saveUser(data.user);
-
-    // Navegación hacia el módulo principal de mensajería
     redirectToChat();
   } catch (err) {
-    // Captura de excepciones (credenciales inválidas o fallo de conexión)
     console.error("Error de login en sistema UCA:", err);
     showError(err.message || "Error al iniciar sesión. Intente nuevamente.");
+  }
+});
+
+// --- MANEJO DE LOGIN CON GOOGLE ---
+if (googleBtn) {
+  googleBtn.addEventListener("click", () => {
+    // Redirección física al servidor para iniciar el flujo OAuth 2.0
+    // No usamos fetch aquí porque Google necesita mostrar su propia interfaz
+    window.location.href = "/auth/google";
+  });
+}
+
+// --- MANEJO DE ERRORES EXTERNOS (GOOGLE O CALLBACKS) ---
+window.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const error = urlParams.get("error");
+
+  if (error) {
+    const errorMessages = {
+      user_not_found:
+        "Tu cuenta de Google no está registrada en el sistema de la UCA.",
+      auth_failed: "Hubo un fallo en la autenticación con Google. Reintenta.",
+      invalid_domain: "Por favor, usa tu cuenta institucional @uca.edu.co",
+    };
+
+    const message = errorMessages[error] || "Ocurrió un error inesperado.";
+    showError(message);
+
+    // Limpia la URL para evitar que el error persista al refrescar
+    window.history.replaceState({}, document.title, window.location.pathname);
   }
 });
