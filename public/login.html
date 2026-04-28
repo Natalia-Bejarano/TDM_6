@@ -31,21 +31,29 @@
         <button type="submit" class="btn-primary">Iniciar Sesión</button>
       </form>
 
-<!-- Añadimos el login divider para la autenticacion con google -->
+      <!-- Añadimos el login divider para la autenticacion con google -->
 
       <div class="login-divider">
-  <span>Continuar con</span>
-</div>
+        <span>Continuar con</span>
+      </div>
 
-<button type="button" class="btn-google">
-  <span class="google-icon">G</span>
-  Google
-</button>
+      <a
+        href="/auth/google"
+        class="btn-google"
+        style="
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <span class="google-icon">G</span>
+        Google
+      </a>
 
-<a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+      <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
 
-
-<!-- Final-->
+      <!-- Final-->
 
       <p id="loginError" class="error-message"></p>
     </div>

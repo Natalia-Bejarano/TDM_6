@@ -116,6 +116,19 @@
       "lastMessage": "Gracias por la información.",
       "lastMessageTime": "2026-04-19T16:00:00Z",
       "attended": true
+    },
+    {
+      "id": "S006",
+      "name": "Adriana Flórez",
+      "password": "123",
+      "email": "azflorez@uniboyaca.edu.co",
+      "rol": "student",
+      "studentID": "UCA-11235",
+      "faculty": "Ingeniería de Sistemas",
+      "status": "offline",
+      "lastMessage": "Gracias por la información.",
+      "lastMessageTime": "2026-04-19T16:00:00Z",
+      "attended": true
     }
   ]
 }
