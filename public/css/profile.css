@@ -1,0 +1,285 @@
+/* ============================================
+   profile.css — Página de configuración UCA
+   ============================================ */
+ 
+/* ── Layout principal ── */
+.profile-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+ 
+/* ── Contenido principal ── */
+.profile-main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 36px 48px;
+  position: relative;
+  background-color: var(--color-bg);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+ 
+.profile-main::-webkit-scrollbar {
+  width: 6px;
+}
+.profile-main::-webkit-scrollbar-track {
+  background: transparent;
+}
+.profile-main::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+ 
+/* ── Botón volver ── */
+.profile-back-btn {
+  position: absolute;
+  top: 28px;
+  right: 40px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.6rem;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition), background var(--transition);
+}
+ 
+.profile-back-btn:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+ 
+/* ── Encabezado ── */
+.profile-header {
+  margin-bottom: 28px;
+}
+ 
+.profile-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+ 
+.profile-header p {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  max-width: 580px;
+}
+ 
+/* ── Resumen del perfil ── */
+.profile-summary {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 36px;
+}
+ 
+#profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 3px solid var(--color-border);
+  flex-shrink: 0;
+}
+ 
+.profile-summary-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+ 
+.profile-summary-info h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+ 
+.profile-summary-info div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+ 
+.profile-summary-info strong {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+ 
+.profile-summary-info span {
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+}
+ 
+/* ── Tarjetas de configuración ── */
+.profile-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+ 
+@media (max-width: 860px) {
+  .profile-cards {
+    grid-template-columns: 1fr;
+  }
+}
+ 
+/* ── Tarjeta base ── */
+.profile-card {
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border-soft);
+}
+ 
+.profile-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 2px;
+}
+ 
+.profile-card > p {
+  font-size: 0.83rem;
+  color: var(--color-text-secondary);
+  margin-top: -6px;
+}
+ 
+/* ── Inputs ── */
+.profile-card label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: -8px;
+}
+ 
+.profile-card input[type="text"] {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color var(--transition), background var(--transition);
+}
+ 
+.profile-card input[type="text"]:focus {
+  border-color: var(--color-accent);
+  background: rgba(37, 99, 235, 0.06);
+}
+ 
+.profile-card input[type="text"]::placeholder {
+  color: var(--color-text-muted);
+}
+ 
+/* ── Botón guardar ── */
+.profile-card button[type="submit"],
+#save-notifications {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 10px 28px;
+  background: var(--color-text-primary);
+  color: var(--color-card);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+ 
+.profile-card button[type="submit"]:hover,
+#save-notifications:hover {
+  background: #d1d9f0;
+  box-shadow: var(--shadow-btn);
+  transform: translateY(-1px);
+}
+ 
+.profile-card button[type="submit"]:active,
+#save-notifications:active {
+  transform: translateY(0);
+}
+ 
+/* ── Mensaje de estado ── */
+.profile-message {
+  font-size: 0.83rem;
+  min-height: 18px;
+  color: #4ade80;
+  margin-top: -4px;
+}
+ 
+/* ── Notificaciones ── */
+.notification-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border-soft);
+}
+ 
+.notification-row:last-of-type {
+  border-bottom: none;
+}
+ 
+.notification-row span {
+  font-size: 0.88rem;
+  color: var(--color-text-primary);
+  flex: 1;
+}
+ 
+/* ── Toggle switches ── */
+.notification-row input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 44px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--transition);
+  outline: none;
+}
+ 
+.notification-row input[type="checkbox"]::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: var(--color-text-secondary);
+  transition: transform var(--transition), background var(--transition);
+}
+ 
+.notification-row input[type="checkbox"]:checked {
+  background: var(--color-accent);
+}
+ 
+.notification-row input[type="checkbox"]:checked::before {
+  transform: translateX(20px);
+  background: #fff;
+}
+ 
+/* ── Botón guardar notificaciones (centrado) ── */
+#save-notifications {
+  align-self: center;
+  margin-top: 8px;
+}
