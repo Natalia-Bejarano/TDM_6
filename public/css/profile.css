@@ -9,6 +9,10 @@
   overflow: hidden;
   background-color: var(--color-bg);
 }
+
+.profile-logo-box img {
+  overflow: hidden;
+}
  
 /* ── Contenido principal ── */
 .profile-main {
