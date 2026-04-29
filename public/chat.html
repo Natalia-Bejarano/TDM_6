@@ -6,38 +6,21 @@
     <title>UCA - Sistema de Chat</title>
     <link rel="stylesheet" href="css/global.css" />
     <link rel="stylesheet" href="css/sidebar.css" />
-     <link rel="stylesheet" href="css/profile.css" />
     <link rel="stylesheet" href="css/chat.css" />
   </head>
   <body>
     <div class="app-layout">
+      <aside class="directory-container">
+        <header class="directory-header">
+          <div class="user-profile-header" id="current-user-info"></div>
+          <input
+            type="text"
+            id="search-contact"
+            placeholder="Buscar contacto..."
+          />
+        </header>
 
-      <aside id="app-sidebar" class="directory-container">
-
-        <!-- MONITOR: logo + nav + avatar -->
-        <div id="sidebar-monitor" style="display:none; flex-direction:column; align-items:center; gap:32px; padding:32px 16px 0; flex:1;">
-          <div class="profile-logo-box">
-            <img src="img/logo-uca.png" alt="Logo UCA" class="profile-logo" />
-            <h2>UCA</h2>
-          </div>
-          <nav class="profile-nav" style="width:100%;">
-            <a href="chat.html" class="active">Mis chats</a>
-            <a href="profile.html">Configuración</a>
-          </nav>
-          <div class="profile-user-bottom" style="margin-top:auto;">
-            <img id="monitor-sidebar-avatar" src="img/default.jpg" alt="Usuario" />
-            <strong id="monitor-sidebar-name">Usuario</strong>
-          </div>
-        </div>
-
-        <!-- ESTUDIANTE: avatar + buscador + lista -->
-        <div id="sidebar-student" style="display:none; flex-direction:column; flex:1; overflow:hidden;">
-          <header class="directory-header">
-            <div class="user-profile-header" id="current-user-info"></div>
-            <input type="text" id="search-contact" placeholder="Buscar contacto..." />
-          </header>
-          <div id="contact-list" class="contact-list"></div>
-        </div>
+        <div id="contact-list" class="contact-list"></div>
 
         <footer class="sidebar-footer">
           <button id="logout-btn" class="logout-link">Cerrar Sesión</button>
@@ -45,26 +28,32 @@
       </aside>
 
       <main class="chat-main">
-
         <div id="welcome-screen" class="empty-state">
-          <div class="clock-icon" id="welcome-icon">💬</div>
-          <h2 id="welcome-title">Cargando...</h2>
-          <p id="welcome-msg"></p>
+          <div class="clock-icon">💬</div>
+          <h2 id="welcome-title">Bandeja de consultas entrantes</h2>
+          <p id="welcome-msg">
+            Seleccione un estudiante o docente disponible para iniciar la
+            conversación.
+          </p>
         </div>
-
         <div id="chat-session" class="chat-session" style="display: none">
           <header class="chat-header">
             <div id="active-contact-info" class="active-contact-info"></div>
-            <button id="close-chat" class="back-btn">←</button>
+            <button id="close-chat" class="back-btn">← Volver</button>
           </header>
+
           <div id="messages-display" class="messages-display"></div>
+
           <footer class="chat-input-area">
-            <button class="attach-btn" type="button" title="Adjuntar archivo">📎</button>
-            <input type="text" id="user-input" placeholder="Escribe un mensaje..." autocomplete="off" />
+            <input
+              type="text"
+              id="user-input"
+              placeholder="Escribe un mensaje..."
+              autocomplete="off"
+            />
             <button id="send-message-btn">➤</button>
           </footer>
         </div>
-
       </main>
     </div>
     <script type="module" src="js/chat.js"></script>

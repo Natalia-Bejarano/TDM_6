@@ -12,22 +12,26 @@ function escapeHTML(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
-
 // funciones auxiliares para roles
 function normalizeRole(role) {
   const normalized = String(role || "").toLowerCase();
+
   if (["student", "estudiante"].includes(normalized)) return "student";
-  if (["monitor", "docente", "teacher", "profesor"].includes(normalized)) return "monitor";
+  if (["monitor", "docente", "teacher", "profesor"].includes(normalized)) {
+    return "monitor";
+  }
+
   return normalized;
 }
 
 function getRoleLabel(role) {
   const normalized = normalizeRole(role);
+
   if (normalized === "monitor") return "Docente / Monitor";
   if (normalized === "student") return "Estudiante";
+
   return "Usuario";
 }
-
 // funciones auxiliares para disponibilidad
 function getAvailableStatus(user) {
   const status = String(user?.status || "").toLowerCase();
@@ -40,7 +44,7 @@ function getAvailabilityLabel(user) {
 
 
 export const chatUI = {
-
+  // funciones que puede usar chat.js
   isUserAvailable(user) {
     return getAvailableStatus(user);
   },
@@ -50,44 +54,30 @@ export const chatUI = {
   },
 
 
-  // ── Sidebar adaptado por rol ──
+  // Renderiza el perfil del usuario actual en la barra lateral
+
   renderCurrentUserInfo(user) {
-    const role = normalizeRole(user.rol);
+    const container = document.getElementById("current-user-info");
+    if (!container) return;
 
-    if (role === "monitor") {
-      // Mostrar sidebar institucional
-      const monitorSidebar = document.getElementById("sidebar-monitor");
-      if (monitorSidebar) monitorSidebar.style.display = "flex";
-
-      const avatar = document.getElementById("monitor-sidebar-avatar");
-      const name   = document.getElementById("monitor-sidebar-name");
-      if (avatar) avatar.src = escapeHTML(user.img || "img/default.jpg");
-      if (name)   name.textContent = user.name || "Usuario";
-
-    } else {
-      // Mostrar sidebar de estudiante
-      const studentSidebar = document.getElementById("sidebar-student");
-      if (studentSidebar) studentSidebar.style.display = "flex";
-
-      const container = document.getElementById("current-user-info");
-      if (!container) return;
-
-      container.innerHTML = `
-        <div class="user-header clickable-profile" title="Ver configuración de cuenta">
-          <img src="${escapeHTML(user.img || "img/default.jpg")}" class="avatar-sm" alt="Mi perfil">
-          <div class="details">
-            <strong>${escapeHTML(user.name)}</strong>
-            <span>${getRoleLabel(user.rol)}</span>
-          </div>
+    container.innerHTML = `
+      <div class="user-header clickable-profile" title="Ver configuración de cuenta">
+        <img src="${escapeHTML(user.img || "img/default.jpg")}" class="avatar-sm">
+        <div class="details">
+          <strong>${escapeHTML(user.name)}</strong>
+          <span>${getRoleLabel(user.rol)}</span>
         </div>
-      `;
+      </div>
+    `;
+      //hacer clic en perfil del usuario para ir a configuracion
 
-      container.onclick = () => { window.location.href = "profile.html"; };
-    }
+    container.onclick = () => {
+      window.location.href = "profile.html";
+    };
   },
 
 
-  // ── Lista de contactos (sidebar estudiante) ──
+  // Genera la lista de contactos filtrada por rol: Monitor o Estudiante
   renderUserList(users, currentUser, onSelect) {
     const listContainer = document.getElementById("contact-list");
     if (!listContainer) return;
@@ -98,12 +88,16 @@ export const chatUI = {
 
     const filtered = users.filter((u) => {
       if (u.id === currentUser.id) return false;
+
       const userRole = normalizeRole(u.rol);
+
       if (currentRole === "student") return userRole === "monitor";
       if (currentRole === "monitor") return userRole === "student";
+
       return false;
     });
 
+    // mensaje cuando no hay contactos visibles
     if (filtered.length === 0) {
       listContainer.innerHTML = `
         <div class="empty-contact-list">
@@ -117,6 +111,7 @@ export const chatUI = {
       const available = getAvailableStatus(user);
       const item = document.createElement("div");
 
+      // clases para contactos disponibles o no disponibles
       item.className = `contact-item ${escapeHTML(user.status || "offline")} ${
         available ? "" : "contact-disabled"
       }`;
@@ -126,6 +121,7 @@ export const chatUI = {
           <img src="${escapeHTML(user.img || "img/default.jpg")}" class="avatar" alt="Foto de ${escapeHTML(user.name)}">
           <span class="status-dot"></span>
         </div>
+
         <div class="contact-details">
           <div class="contact-name">${escapeHTML(user.name)}</div>
           <div class="contact-extra">${escapeHTML(user.specialty || user.faculty || "")}</div>
@@ -133,13 +129,19 @@ export const chatUI = {
         </div>
       `;
 
+      // marcar contacto seleccionado y bloquear offline
       item.onclick = () => {
         if (!available) {
           alert(`${user.name} no está disponible en este momento.`);
           return;
         }
-        document.querySelectorAll(".contact-item").forEach((c) => c.classList.remove("selected"));
+
+        document.querySelectorAll(".contact-item").forEach((contact) => {
+          contact.classList.remove("selected");
+        });
+
         item.classList.add("selected");
+
         onSelect(user);
       };
 
@@ -148,7 +150,9 @@ export const chatUI = {
   },
 
 
-  // ── Cabecera del chat activo ──
+  /**
+   * ACTUALIZACIÓN: Actualiza la cabecera del chat con el contacto activo
+   */
   updateChatHeader(contact) {
     const headerInfo = document.getElementById("active-contact-info");
     if (!headerInfo) return;
@@ -158,131 +162,64 @@ export const chatUI = {
         <img src="${escapeHTML(contact.img || "img/default.jpg")}" class="avatar-sm" alt="Foto de ${escapeHTML(contact.name)}">
         <div>
           <strong>${escapeHTML(contact.name)}</strong>
-          <small>${contact.id ? `UCA-${escapeHTML(String(contact.id))}` : ""}</small>
           <small>${escapeHTML(contact.specialty || contact.faculty || "")}</small>
+          <small class="active-contact-status">${getAvailabilityLabel(contact)}</small>
         </div>
       </div>
     `;
   },
 
 
-  // ── Burbuja de mensaje ──
+  /**
+   * ACTUALIZACIÓNN: Renderiza una burbuja de mensaje en pantalla
+   */
   displayMessage(text, type) {
     const container = document.getElementById("messages-display");
     if (!container) return;
 
     const msgDiv = document.createElement("div");
+
+    // "sent" para mis mensajes, "received" para mensajes recibidos
     msgDiv.className = `message-bubble ${type}`;
 
     const now = new Date();
-    const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const timeStr = now.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
+    // escapeHTML evita inyección de HTML o scripts
     msgDiv.innerHTML = `
       <div class="text-content">${escapeHTML(text)}</div>
       <div class="message-time">${timeStr}</div>
     `;
 
     container.appendChild(msgDiv);
+
+    // AutoScroll para ver siempre el último mensaje
     container.scrollTop = container.scrollHeight;
   },
 
 
-  // ── Bandeja del monitor ──
+  // Mostrar estado de conexión del WebSocket
   updateConnectionStatus(status) {
-    const welcomeScreen = document.getElementById("welcome-screen");
-    if (!welcomeScreen) return;
+    const welcomeTitle = document.getElementById("welcome-title");
+    const welcomeMsg = document.getElementById("welcome-msg");
 
-    if (!document.getElementById("inbox-topbar")) {
-      welcomeScreen.innerHTML = `
-        <div id="inbox-topbar" class="inbox-topbar">
-          <h2>Bandeja de consultas entrantes</h2>
-          <button class="availability-badge" id="availability-toggle">
-            <span class="availability-dot"></span>
-            Disponible ▾
-          </button>
-        </div>
-        <p class="inbox-subtitle">
-          Gestione las solicitudes de chat pendientes y responda a las consultas activas de la comunidad universitaria.
-        </p>
-        <div class="inbox-searchbar">
-          <input type="text" placeholder="Buscar estudiante por nombre, ID o facultad..." />
-          <span class="search-icon">🔍</span>
-        </div>
-        <p class="inbox-section-label">En espera</p>
-        <div class="inbox-list" id="inbox-list"></div>
-      `;
+    if (!welcomeTitle || !welcomeMsg) return;
+
+    if (status === "connected") {
+      welcomeTitle.textContent = "Chat institucional";
+      welcomeMsg.textContent = "Seleccione una conversación para comenzar.";
+    } else if (status === "disconnected") {
+      welcomeTitle.textContent = "Reconectando...";
+      welcomeMsg.textContent = "Se perdió la conexión con el servidor.";
+    } else if (status === "failed") {
+      welcomeTitle.textContent = "Sin conexión";
+      welcomeMsg.textContent = "No se pudo conectar con el servidor de chat.";
+    } else if (status === "error") {
+      welcomeTitle.textContent = "Problema de conexión";
+      welcomeMsg.textContent = "El canal de chat reportó un error.";
     }
-
-    if (status === "disconnected") {
-      const title = document.querySelector("#inbox-topbar h2");
-      if (title) title.textContent = "Reconectando...";
-    } else if (status === "failed" || status === "error") {
-      const title = document.querySelector("#inbox-topbar h2");
-      if (title) title.textContent = "Sin conexión al servidor";
-    }
-  },
-
-
-  // ── Añade tarjeta a la bandeja ──
-  addInboxCard(user, onSelect) {
-    const list = document.getElementById("inbox-list");
-    if (!list) return;
-
-    const card = document.createElement("div");
-    card.className = "inbox-card";
-    card.dataset.userId = user.id;
-
-    const preview = escapeHTML(user.lastMessage || "Nueva consulta entrante");
-    const timeLabel = user.waitTime || "5 min";
-
-    card.innerHTML = `
-      <img src="${escapeHTML(user.img || "img/default.jpg")}" alt="Foto de ${escapeHTML(user.name)}">
-      <div class="inbox-card-body">
-        <div class="inbox-card-name">${escapeHTML(user.name)}</div>
-        <div class="inbox-card-meta">
-          UCA-${escapeHTML(String(user.id))}<br>
-          ${escapeHTML(user.specialty || user.faculty || "")}
-        </div>
-      </div>
-      <div class="inbox-card-preview">"${preview}"</div>
-      <div class="inbox-badge">${escapeHTML(timeLabel)}</div>
-    `;
-
-    card.onclick = () => {
-      document.querySelectorAll(".inbox-card").forEach((c) => c.classList.remove("selected"));
-      card.classList.add("selected");
-      if (onSelect) onSelect(user);
-    };
-
-    list.appendChild(card);
-  },
-
-
-  // ── Mueve tarjeta a "Consultas en curso" ──
-  moveCardToActive(userId) {
-    const card = document.querySelector(`.inbox-card[data-user-id="${userId}"]`);
-    if (!card) return;
-
-    let activeList = document.getElementById("active-inbox-list");
-
-    if (!activeList) {
-      const inboxList = document.getElementById("inbox-list");
-
-      const activeSection = document.createElement("p");
-      activeSection.className = "inbox-section-label";
-      activeSection.textContent = "Consultas en curso";
-      inboxList.after(activeSection);
-
-      activeList = document.createElement("div");
-      activeList.id = "active-inbox-list";
-      activeList.className = "inbox-list";
-      activeSection.after(activeList);
-    }
-
-    card.classList.add("inbox-card--active-chat");
-    const previewEl = card.querySelector(".inbox-card-preview");
-    if (previewEl) previewEl.textContent = 'Tú: "..."';
-
-    activeList.appendChild(card);
   },
 };
