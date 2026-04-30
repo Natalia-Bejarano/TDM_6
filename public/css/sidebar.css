@@ -134,7 +134,7 @@
    ============================================ */
 
 .directory-container {
-  width: 320px;
+  width: 800PX;
   display: flex;
   flex-direction: column;
   background: var(--navy-800);
