@@ -1,8 +1,11 @@
-/* ===== CHAT.CSS ===== */
+/* ============================================================
+   CHAT.CSS — Área principal de conversación
+   ============================================================ */
 
-/* ==============================
-   ÁREA PRINCIPAL DE CHAT
-   ============================== */
+
+/* ============================================================
+   1. CONTENEDOR PRINCIPAL DEL CHAT
+   ============================================================ */
 
 .chat-main {
   flex: 1;
@@ -13,7 +16,11 @@
   position: relative;
 }
 
-/* ---- Estado vacío / bienvenida ---- */
+
+/* ============================================================
+   2. ESTADO VACÍO / BIENVENIDA
+   ============================================================ */
+
 .empty-state {
   flex: 1;
   display: flex;
@@ -22,9 +29,9 @@
   justify-content: center;
   gap: 16px;
   padding: 40px;
-  color: #8fa3c0;
   text-align: center;
   background: #f7f9fc;
+  color: #8fa3c0;
 }
 
 .clock-icon {
@@ -48,9 +55,10 @@
   line-height: 1.6;
 }
 
-/* ==============================
-   SESIÓN DE CHAT ACTIVA
-   ============================== */
+
+/* ============================================================
+   3. SESIÓN DE CHAT ACTIVA
+   ============================================================ */
 
 .chat-session {
   display: flex;
@@ -59,7 +67,7 @@
   overflow: hidden;
 }
 
-/* ---- Header del chat activo ---- */
+/* Header */
 .chat-header {
   display: flex;
   align-items: center;
@@ -71,6 +79,7 @@
   gap: 12px;
 }
 
+/* Info del contacto activo */
 .active-contact-info {
   display: flex;
   align-items: center;
@@ -81,7 +90,7 @@
 .active-contact-info img {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 50%;     /* ← círculo perfecto */
   object-fit: cover;
   border: 2px solid var(--navy-500);
   flex-shrink: 0;
@@ -129,9 +138,10 @@
   color: var(--text-primary);
 }
 
-/* ==============================
-   ÁREA DE MENSAJES
-   ============================== */
+
+/* ============================================================
+   4. ÁREA DE MENSAJES
+   ============================================================ */
 
 .messages-display {
   flex: 1;
@@ -154,7 +164,7 @@
   border-radius: 4px;
 }
 
-/* ---- Wrapper de mensaje ---- */
+/* Wrapper del mensaje */
 .message-wrapper {
   display: flex;
   flex-direction: column;
@@ -168,27 +178,24 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Entrante = izquierda */
 .message-wrapper.incoming {
   align-self: flex-start;
   align-items: flex-start;
 }
 
-/* Saliente = derecha */
 .message-wrapper.outgoing {
   align-self: flex-end;
   align-items: flex-end;
 }
 
-/* ---- Burbuja ---- */
+/* Burbuja */
 .message-bubble {
   padding: 10px 14px;
   border-radius: var(--radius-lg);
   font-size: 13.5px;
   line-height: 1.55;
   word-break: break-word;
-  position: relative;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 .message-wrapper.incoming .message-bubble {
@@ -203,7 +210,7 @@
   border-bottom-right-radius: var(--radius-sm);
 }
 
-/* ---- Timestamp ---- */
+/* Timestamp */
 .message-time {
   font-size: 10.5px;
   font-family: var(--font-mono);
@@ -211,16 +218,16 @@
   padding: 0 4px;
 }
 
-/* ---- Separador de fecha ---- */
+/* Separador de fecha */
 .date-divider {
   display: flex;
   align-items: center;
   gap: 10px;
   margin: 8px 0;
-  color: #a0b4cc;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.04em;
+  color: #a0b4cc;
 }
 
 .date-divider::before,
@@ -231,9 +238,10 @@
   background: #d8e3f0;
 }
 
-/* ==============================
-   FOOTER / INPUT DE MENSAJE
-   ============================== */
+
+/* ============================================================
+   5. INPUT DE MENSAJE (FOOTER)
+   ============================================================ */
 
 .chat-input-area {
   display: flex;
@@ -266,6 +274,7 @@
   box-shadow: 0 0 0 3px var(--blue-glow);
 }
 
+/* Botón enviar */
 #send-message-btn {
   width: 40px;
   height: 40px;
@@ -277,8 +286,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
   box-shadow: 0 2px 8px var(--blue-glow);
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 #send-message-btn:hover {
@@ -291,27 +300,17 @@
   transform: scale(0.97);
 }
 
-/* ==============================
-   RESPONSIVE BÁSICO
-   ============================== */
+
+/* ============================================================
+   6. RESPONSIVE
+   ============================================================ */
 
 @media (max-width: 768px) {
-  .directory-container {
-    width: 260px;
-    position: absolute;
-    z-index: 10;
-    height: 100%;
-  }
-
-  .directory-container.collapsed {
-    display: none;
+  .message-wrapper {
+    max-width: 88%;
   }
 
   .chat-session .back-btn {
     display: flex;
-  }
-
-  .message-wrapper {
-    max-width: 88%;
   }
 }
