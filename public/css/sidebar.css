@@ -9,6 +9,19 @@
   background-color: #6c757d; /* offline */
 }
 
+.contact-item{
+  display: flex;
+  margin-bottom: 25px;
+  padding: 16px 14px;
+  align-items: center;
+  gap: 12px;
+}
+
+.contact-item:hover {
+  background: var(--navy-700);
+  
+}
+
 .contact-item.online .status-dot {
   background-color: #28a745;
 }
@@ -212,8 +225,10 @@
 
 .contact-list {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: hidden;
   padding: 8px 0;
+  margin-top: 30px;
+  margin-left: 15px;
 }
 
 .contact-section-label {
@@ -229,6 +244,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-top: 40px;
   padding: 12px 16px;
   cursor: pointer;
   border-left: 3px solid transparent;
@@ -237,6 +253,7 @@
 
 .contact-card:hover {
   background: var(--navy-700);
+  margin-top: 20px;
 }
 
 .contact-card.active {
@@ -247,11 +264,13 @@
 /* Avatar */
 .contact-avatar {
   position: relative;
+  margin-top: 20px;
 }
 
 .contact-avatar img {
   width: 44px;
   height: 44px;
+  margin-top: 20px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -274,6 +293,7 @@
 .contact-info {
   flex: 1;
   display: flex;
+  margin-top: 10px;
   flex-direction: column;
   gap: 2px;
 }

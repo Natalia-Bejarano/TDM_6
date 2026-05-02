@@ -6,7 +6,6 @@
 .profile-layout {
   display: flex;
   height: 100vh;
-  overflow: hidden;
   background-color: var(--color-bg);
 }
 
@@ -209,7 +208,6 @@
 .profile-card button[type="submit"]:hover,
 #save-notifications:hover {
   background: #d1d9f0;
-  box-shadow: var(--shadow-btn);
   transform: translateY(-1px);
 }
  
