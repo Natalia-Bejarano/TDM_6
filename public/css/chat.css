@@ -292,26 +292,62 @@
 }
 
 /* ==============================
-   RESPONSIVE BÁSICO
+   RESPONSIVE REAL (MÓVIL)
    ============================== */
 
 @media (max-width: 768px) {
+
+  /* Layout general */
+  .profile-layout {
+    display: block;
+  }
+
+  .app-layout {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Ocultar sidebar */
+  .profile-sidebar {
+    display: none !important;
+  }
+
+  /* Contactos pantalla completa */
   .directory-container {
-    width: 260px;
     position: absolute;
-    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 100%; /* 🔥 IMPORTANTE */
+    height: 100%;
+    background: var(--navy-800);
+    z-index: 20;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+  }
+
+  /* Ocultar contactos al abrir chat */
+  .directory-container.hide {
+    transform: translateX(-100%);
+  }
+
+  /* Chat ocupa toda la pantalla */
+  .chat-main {
+    width: 100%;
     height: 100%;
   }
 
-  .directory-container.collapsed {
-    display: none;
+  .chat-session {
+    height: 100%;
   }
 
-  .chat-session .back-btn {
-    display: flex;
+  /* Botón volver visible */
+  .back-btn {
+    display: block;
   }
 
+  /* Mensajes más anchos en móvil */
   .message-wrapper {
-    max-width: 88%;
+    max-width: 90%;
   }
 }

@@ -219,3 +219,45 @@ border-radius: 10px;
   text-align: center;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
+/* ==============================
+   RESPONSIVE HOME
+   ============================== */
+
+@media (max-width: 768px) {
+
+  .home-navbar {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .hero-text h1 {
+    font-size: 26px;
+  }
+
+  .home-content {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    gap: 15px;
+  }
+
+  .left-panel,
+  .right-info {
+    width: 100%;
+    height: auto;
+  }
+
+  .campus-column {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .campus-item {
+    min-width: 140px;
+  }
+
+  .main-photo {
+    height: 250px;
+  }
+}
