@@ -180,4 +180,14 @@ function setupEvents() {
   document.getElementById("user-input").onkeydown = (e) => {
     if (e.key === "Enter") send();
   };
+  const avatar = document.getElementById("sidebar-avatar");
+const name = document.getElementById("sidebar-name");
+
+if (avatar) {
+  avatar.src = currentUser.img || "./img/default.jpg";
+}
+
+if (name) {
+  name.textContent = currentUser.name || "Usuario";
+}
 }
