@@ -181,7 +181,7 @@
   line-height: 1.55;
   border-radius: var(--radius-lg);
   word-break: break-word;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 .incoming .message-bubble {
@@ -201,8 +201,10 @@
 .message-time {
   font-size: 10.5px;
   font-family: var(--font-mono);
-  color: #a0b4cc;
+  color: #000000; /* <--- Cambia esto a negro puro */
+  font-weight: 600; /* Opcional: un poco de grosor para que resalte más */
   padding: 0 4px;
+  opacity: 0.8; /* Opcional: para que no sea un negro tan "golpeado" */
 }
 
 /* DIVISOR FECHA */
@@ -219,7 +221,7 @@
 
 .date-divider::before,
 .date-divider::after {
-  content: '';
+  content: "";
   flex: 1;
   height: 1px;
   background: #d8e3f0;
@@ -304,7 +306,6 @@
    ============================== */
 
 @media (max-width: 768px) {
-
   .profile-layout {
     display: block;
   }
@@ -347,3 +348,4 @@
     max-width: 90%;
   }
 }
+
