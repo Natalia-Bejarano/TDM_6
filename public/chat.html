@@ -9,8 +9,42 @@
     <link rel="stylesheet" href="css/chat.css" />
   </head>
   <body>
+    <!-- Contenedor principal de la página de perfil -->
+    <div class="profile-layout">
+
+
+      <!-- Contenido principal de configuración -->
+      <main class="profile-main">
+        
     <div class="app-layout">
+      
+      <!-- Barra lateral izquierda del perfil -->
+      <aside class="profile-sidebar">
+
+        <!-- Logo institucional -->
+        <div class="profile-logo-box">
+          <img src="./resources/logouca3.png" alt="Logo UCA" class="profile-logo" />
+          <h2>UCA</h2>
+        </div>
+
+        <!-- Navegación interna del perfil -->
+        <nav class="profile-nav">
+          <a href="chat.html">Mis chats</a>
+          <a href="profile.html" class="active">Configuración</a>
+        </nav>
+
+        <!-- Información resumida del usuario en la parte inferior -->
+        <div class="profile-user-bottom">
+          <img id="sidebar-avatar" src="resources/pexels-teguhsugi-18679285.jpg" alt="Usuario" />
+          <strong id="sidebar-name">Usuario</strong>
+        </div>
+        
+        <footer class="sidebar-footer">
+          <button id="logout-btn" class="logout-link">Cerrar Sesión</button>
+        </footer>
+      </aside>
       <aside class="directory-container">
+        
         <header class="directory-header">
           <div class="user-profile-header" id="current-user-info"></div>
           <input
@@ -22,9 +56,7 @@
 
         <div id="contact-list" class="contact-list"></div>
 
-        <footer class="sidebar-footer">
-          <button id="logout-btn" class="logout-link">Cerrar Sesión</button>
-        </footer>
+        
       </aside>
 
       <main class="chat-main">
@@ -56,6 +88,8 @@
         </div>
       </main>
     </div>
+    
     <script type="module" src="js/chat.js"></script>
+    
   </body>
 </html>

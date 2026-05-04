@@ -1,19 +1,92 @@
-* {
+/* ============================================
+   GLOBAL.CSS — BASE DEL SISTEMA
+   ============================================ */
+
+/* RESET */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* VARIABLES */
 :root {
-  --uca-blue: #002d72;
-  --uca-light-blue: #3b71ca;
-  --uca-white: #ffffff;
-  --uca-gray-bg: #f4f7f9;
-  /* ... las otras variables que definas */
+  /* COLORES BASE */
+  --color-bg: #1a1a2e;
+  --color-sidebar: #0f172a;
+  --color-card: #1f3a6e;
+
+  --color-text-primary: #f0f4ff;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+
+  --color-border: #2d4a8a;
+  --color-border-soft: #1e3a5f;
+
+  /* CHAT */
+  --navy-900: #111d2e;
+  --navy-800: #162338;
+  --navy-700: #1c2d46;
+  --navy-600: #233554;
+  --navy-500: #2a3e63;
+
+  --blue-vivid: #1a72e8;
+  --blue-light: #3b8ef0;
+
+  --surface-chat: #f4f7fb;
+  --surface-input: #f4f7fb;
+
+  /* VARIABLES QUE FALTABAN PARA LAS BURBUJAS */
+  --bubble-in-bg: #333333; /* Gris oscuro para el que entra */
+  --bubble-in-txt: #ffffff; /* Letra blanca */
+
+  --bubble-out-bg: #1c2e5b; /* Azul para el que sale */
+  --bubble-out-txt: #ffffff; /* Letra blanca */
+
+  /* TEXTO CHAT */
+  --text-primary: #eef2f8;
+  --text-secondary: #8fa3c0;
+  --text-muted: #526a8a;
+
+  /* OTROS */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 999px;
+
+  --transition: 0.2s ease;
 }
 
+/* BASE */
+html,
 body {
-  background-color: var(--uca-gray-bg);
-  color: #333;
+  height: 100%;
+  font-family: "Segoe UI", sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+/* ELEMENTOS */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* UTILIDAD CLAVE */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 }

@@ -42,7 +42,6 @@ function getAvailabilityLabel(user) {
   return getAvailableStatus(user) ? "Disponible" : "No disponible";
 }
 
-
 export const chatUI = {
   // funciones que puede usar chat.js
   isUserAvailable(user) {
@@ -52,7 +51,6 @@ export const chatUI = {
   normalizeRole(role) {
     return normalizeRole(role);
   },
-
 
   // Renderiza el perfil del usuario actual en la barra lateral
 
@@ -69,13 +67,12 @@ export const chatUI = {
         </div>
       </div>
     `;
-      //hacer clic en perfil del usuario para ir a configuracion
+    //hacer clic en perfil del usuario para ir a configuracion
 
     container.onclick = () => {
       window.location.href = "profile.html";
     };
   },
-
 
   // Genera la lista de contactos filtrada por rol: Monitor o Estudiante
   renderUserList(users, currentUser, onSelect) {
@@ -149,7 +146,6 @@ export const chatUI = {
     });
   },
 
-
   /**
    * ACTUALIZACIÓN: Actualiza la cabecera del chat con el contacto activo
    */
@@ -169,7 +165,6 @@ export const chatUI = {
     `;
   },
 
-
   /**
    * ACTUALIZACIÓNN: Renderiza una burbuja de mensaje en pantalla
    */
@@ -177,10 +172,12 @@ export const chatUI = {
     const container = document.getElementById("messages-display");
     if (!container) return;
 
-    const msgDiv = document.createElement("div");
+    // 1. Creamos el WRAPPER (el contenedor que alinea a izq o der)
+    const wrapper = document.createElement("div");
 
-    // "sent" para mis mensajes, "received" para mensajes recibidos
-    msgDiv.className = `message-bubble ${type}`;
+    // Convertimos los tipos del socket a las clases de tu CSS
+    const wrapperClass = type === "sent" ? "outgoing" : "incoming";
+    wrapper.className = `message-wrapper ${wrapperClass}`;
 
     const now = new Date();
     const timeStr = now.toLocaleTimeString([], {
@@ -188,18 +185,20 @@ export const chatUI = {
       minute: "2-digit",
     });
 
-    // escapeHTML evita inyección de HTML o scripts
-    msgDiv.innerHTML = `
-      <div class="text-content">${escapeHTML(text)}</div>
+    // 2. Insertamos la estructura que el CSS espera: Bubble -> TextContent
+    // La hora va fuera de la burbuja según tu diseño de referencia
+    wrapper.innerHTML = `
+      <div class="message-bubble">
+        <div class="text-content">${escapeHTML(text)}</div>
+      </div>
       <div class="message-time">${timeStr}</div>
     `;
 
-    container.appendChild(msgDiv);
+    container.appendChild(wrapper);
 
-    // AutoScroll para ver siempre el último mensaje
+    // 3. AutoScroll para ver siempre el último mensaje
     container.scrollTop = container.scrollHeight;
   },
-
 
   // Mostrar estado de conexión del WebSocket
   updateConnectionStatus(status) {
@@ -223,3 +222,4 @@ export const chatUI = {
     }
   },
 };
+
