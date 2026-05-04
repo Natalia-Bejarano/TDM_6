@@ -8,7 +8,7 @@
       "rol": "monitor",
       "specialty": "Dudas Administrativas, Matrículas y Pagos",
       "status": "offline",
-      "img": "img/monitors/juan.jpg"
+      "img": "./resources/juan.jpg"
     },
     {
       "id": "M002",
@@ -18,7 +18,7 @@
       "rol": "monitor",
       "specialty": "Consultas Académicas Facultad de Derecho",
       "status": "online",
-      "img": "img/monitors/valentina.jpg",
+      "img": "./resources/valentina.jpg",
       "lastMessage": "hola",
       "lastMessageTime": "2026-04-21T14:56:33.693Z"
     },
@@ -30,7 +30,7 @@
       "rol": "monitor",
       "specialty": "Soporte Técnico Plataforma (Moodle)",
       "status": "offline",
-      "img": "img/monitors/andrea.jpg"
+      "img": "./resources/andrea.jpg"
     },
     {
       "id": "M004",
@@ -40,7 +40,7 @@
       "rol": "monitor",
       "specialty": "Consultas Académicas Ciencias Económicas",
       "status": "offline",
-      "img": "img/monitors/mateo.jpg"
+      "img": "./resources/mateo.jpg"
     },
     {
       "id": "M005",
@@ -50,7 +50,7 @@
       "rol": "monitor",
       "specialty": "Bienestar Universitario y Becas",
       "status": "offline",
-      "img": "img/monitors/camilo.jpg"
+      "img": "./resources/camilo.jpg"
     },
     {
       "id": "S001",
@@ -60,7 +60,8 @@
       "rol": "student",
       "studentID": "UCA-88420",
       "faculty": "Facultad de Ingeniería",
-      "status": "online",
+      "status": "offline",
+      "img": "./resources/carlos.jpg",
       "lastMessage": "hola",
       "lastMessageTime": "2026-04-21T14:56:27.354Z",
       "attended": false
@@ -74,6 +75,7 @@
       "studentID": "UCA-88421",
       "faculty": "Facultad de Ingeniería",
       "status": "offline",
+      "img": "./resources/lucia.jpg",
       "lastMessage": "Saben algo de la homologación...",
       "lastMessageTime": "2026-04-20T10:12:00Z",
       "attended": false
@@ -86,7 +88,8 @@
       "rol": "student",
       "studentID": "UCA-88422",
       "faculty": "Facultad de Ingeniería",
-      "status": "offline",
+      "status": "online",
+      "img": "./resources/roberto.jpg",
       "lastMessage": "No puedo acceder al aula virtual.",
       "lastMessageTime": "2026-04-20T10:18:00Z",
       "attended": false
@@ -100,6 +103,7 @@
       "studentID": "UCA-55210",
       "faculty": "Ciencias Económicas",
       "status": "offline",
+      "img": "./resources/mariana.jpg",
       "lastMessage": "Quedo pendiente del envío del comprobante...",
       "lastMessageTime": "2026-04-20T10:19:00Z",
       "attended": true
@@ -113,6 +117,7 @@
       "studentID": "UCA-11234",
       "faculty": "Derecho y Ciencias Políticas",
       "status": "offline",
+      "img": "./resources/sofia.jpg",
       "lastMessage": "Gracias por la información.",
       "lastMessageTime": "2026-04-19T16:00:00Z",
       "attended": true
@@ -126,6 +131,7 @@
       "studentID": "UCA-11235",
       "faculty": "Ingeniería de Sistemas",
       "status": "offline",
+      "img": "./resources/adriana.jpg",
       "lastMessage": "Gracias por la información.",
       "lastMessageTime": "2026-04-19T16:00:00Z",
       "attended": true
