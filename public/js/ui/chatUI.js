@@ -60,7 +60,7 @@ export const chatUI = {
 
     container.innerHTML = `
       <div class="user-header clickable-profile" title="Ver configuración de cuenta">
-        <img src="${escapeHTML(user.img || "img/default.jpg")}" class="avatar-sm">
+        <img src="${escapeHTML(user.img || "resources/default.png")}" class="avatar-sm">
         <div class="details">
           <strong>${escapeHTML(user.name)}</strong>
           <span>${getRoleLabel(user.rol)}</span>
@@ -115,7 +115,7 @@ export const chatUI = {
 
       item.innerHTML = `
         <div class="avatar-wrapper">
-          <img src="${escapeHTML(user.img || "img/default.jpg")}" class="avatar" alt="Foto de ${escapeHTML(user.name)}">
+          <img src="${escapeHTML(user.img || "resources/default.png")}" class="avatar" alt="Foto de ${escapeHTML(user.name)}">
           <span class="status-dot"></span>
         </div>
 
@@ -155,7 +155,7 @@ export const chatUI = {
 
     headerInfo.innerHTML = `
       <div class="active-user-header">
-        <img src="${escapeHTML(contact.img || "img/default.jpg")}" class="avatar-sm" alt="Foto de ${escapeHTML(contact.name)}">
+        <img src="${escapeHTML(contact.img || "resources/default.png")}" class="avatar-sm" alt="Foto de ${escapeHTML(contact.name)}">
         <div>
           <strong>${escapeHTML(contact.name)}</strong>
           <small>${escapeHTML(contact.specialty || contact.faculty || "")}</small>

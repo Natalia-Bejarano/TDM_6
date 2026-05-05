@@ -184,7 +184,7 @@ function setupEvents() {
 const name = document.getElementById("sidebar-name");
 
 if (avatar) {
-  avatar.src = currentUser.img || "./img/default.jpg";
+  avatar.src = currentUser.img || "./resources/default.png";
 }
 
 if (name) {
