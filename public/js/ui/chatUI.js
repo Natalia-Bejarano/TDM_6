@@ -54,23 +54,35 @@ export const chatUI = {
     const container = document.getElementById("current-user-info");
     if (!container) return;
 
-    // ESTRUCTURA ACTUALIZADA CON EL CONTENEDOR DEL AVATAR Y EL PUNTO VERDE
     container.innerHTML = `
-      <div class="current-user-avatar">
-        <img src="${escapeHTML(user.img || "resources/default.png")}" alt="Foto de Perfil">
-        <span class="current-avatar-status"></span>
-      </div>
-      <div class="current-user-details">
-        <span class="current-user-name">${escapeHTML(user.name)}</span>
-        <span class="current-user-role">${getRoleLabel(user.rol)}</span>
+      <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+        <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;" onclick="window.location.href='profile.html'">
+          <div class="current-user-avatar">
+            <img src="${escapeHTML(user.img || "resources/default.png")}" alt="Foto de Perfil">
+            <span class="current-avatar-status"></span>
+          </div>
+          <div class="current-user-details">
+            <span class="current-user-name">${escapeHTML(user.name)}</span>
+            <span class="current-user-role">${getRoleLabel(user.rol)}</span>
+          </div>
+        </div>
+        
+        <button id="mobile-logout-btn" class="mobile-logout-btn" title="Cerrar sesión">
+          <!-- Ícono de "Salir" de FeatherIcons -->
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
       </div>
     `;
 
-    // Clic en el perfil para ir a configuración
-    container.style.cursor = "pointer";
-    container.onclick = () => {
-      window.location.href = "profile.html";
-    };
+    // Lógica para cerrar sesión desde el móvil
+    const logoutBtn = document.getElementById("mobile-logout-btn");
+    if (logoutBtn) {
+      logoutBtn.onclick = (e) => {
+        e.stopPropagation(); // Evita que se dispare el clic que lleva al perfil
+        localStorage.removeItem("user");
+        window.location.href = "login.html";
+      };
+    }
   },
 
   // 2. RENDERIZAR DIRECTORIO DE CONTACTOS
@@ -102,11 +114,9 @@ export const chatUI = {
       const available = getAvailableStatus(user);
       const item = document.createElement("div");
 
-      // CLASES CORREGIDAS PARA COINCIDIR CON SIDEBAR.CSS (.contact-card en lugar de .contact-item)
       const statusClass = available ? "online" : "offline";
       item.className = `contact-card ${statusClass}`;
 
-      // ESTRUCTURA CORREGIDA
       item.innerHTML = `
         <div class="contact-avatar">
           <img src="${escapeHTML(user.img || "resources/default.png")}" alt="Foto de ${escapeHTML(user.name)}">
@@ -125,11 +135,15 @@ export const chatUI = {
           return;
         }
 
-        // Remover "active" de todos y ponérselo al seleccionado
         document.querySelectorAll(".contact-card").forEach((contact) => {
           contact.classList.remove("active");
         });
         item.classList.add("active");
+
+        const chatMain = document.querySelector(".chat-main");
+        if (chatMain) {
+          chatMain.classList.add("show-chat-mobile");
+        }
 
         onSelect(user);
       };
@@ -138,12 +152,11 @@ export const chatUI = {
     });
   },
 
-  // 3. ACTUALIZAR CABECERA DEL CHAT (VENTANA DE CONVERSACIÓN)
+  // 3. ACTUALIZAR CABECERA DEL CHAT
   updateChatHeader(contact) {
     const headerInfo = document.getElementById("active-contact-info");
     if (!headerInfo) return;
 
-    // ESTRUCTURA CORREGIDA PARA COINCIDIR CON CHAT.CSS
     headerInfo.innerHTML = `
       <img src="${escapeHTML(contact.img || "resources/default.png")}" alt="Foto de ${escapeHTML(contact.name)}">
       <div class="active-contact-details">
@@ -198,6 +211,21 @@ export const chatUI = {
     } else if (status === "error") {
       welcomeTitle.textContent = "Problema de conexión";
       welcomeMsg.textContent = "El canal de chat reportó un error.";
+    }
+  },
+
+  // 6. NUEVA FUNCIÓN: CONFIGURAR BOTÓN VOLVER (MÓVIL)
+  setupMobileBackButton() {
+    // Busca el botón con la clase .back-btn
+    const backBtn = document.querySelector(".back-btn");
+    if (backBtn) {
+      backBtn.addEventListener("click", () => {
+        const chatMain = document.querySelector(".chat-main");
+        if (chatMain) {
+          // Al quitar la clase, el panel de chat se desliza de vuelta a la derecha
+          chatMain.classList.remove("show-chat-mobile");
+        }
+      });
     }
   },
 };

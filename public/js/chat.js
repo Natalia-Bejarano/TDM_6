@@ -42,7 +42,6 @@ let selectedUser = null;
 let allUsers = [];
 
 // --- 3. FUNCIONES DE INTERFAZ ---
-
 const updateSendButtonState = () => {
   const sendBtn = document.getElementById("send-message-btn");
   const userInput = document.getElementById("user-input");
@@ -66,14 +65,12 @@ const renderContacts = (users = allUsers) => {
 };
 
 // --- 4. INICIALIZACIÓN ---
-
 document.addEventListener("DOMContentLoaded", async () => {
   if (!currentUser) return;
 
   // 1. Mostrar información del usuario actual en el sidebar
   chatUI.renderCurrentUserInfo(currentUser);
 
-  // REFUERZO VISUAL: Forzamos la carga de la imagen y nombre
   const avatar = document.getElementById("sidebar-avatar");
   const nameDisplay = document.getElementById("sidebar-name");
 
@@ -116,7 +113,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             // Si el chat está abierto, mostramos el mensaje directamente
             chatUI.displayMessage(data.text, "received");
           } else {
-            // Si el mensaje es de otra persona, lanzamos el aviso que faltaba
+            // Si el mensaje es de otra persona, lanzamos el aviso
             const sender = allUsers.find((u) => u.id === data.from);
             alert(
               `💬 Nuevo mensaje de: ${sender ? sender.name : "un usuario"}`,
@@ -136,12 +133,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   setupEvents();
+
+  // --- ACTIVAR BOTÓN VOLVER (MÓVIL) ---
+  // Llamamos a la función de chatUI que configuramos en el paso anterior
+  chatUI.setupMobileBackButton();
 });
 
 // --- 5. LÓGICA DEL CHAT ---
-
 function openChat(contact) {
-  // Aviso de persona no disponible (funciona como antes)
+  // Aviso de persona no disponible
   if (!chatUI.isUserAvailable(contact)) return alert("Usuario no disponible");
 
   selectedUserId = contact.id;
@@ -161,14 +161,11 @@ function setupEvents() {
   document.getElementById("search-contact")?.addEventListener("input", (e) => {
     let term = e.target.value;
 
-    // 1. Control de longitud: No permitimos buscar más de 50 caracteres
     if (term.length > 50) {
-      e.target.value = term.substring(0, 50); // Recortamos el exceso visualmente
+      e.target.value = term.substring(0, 50);
       term = e.target.value;
     }
 
-    // 2. Sanitización rápida: Eliminamos caracteres de etiquetas < > para evitar líos
-    // y aplicamos trim/lowercase para una búsqueda limpia.
     const cleanTerm = term.toLowerCase().trim().replace(/[<>]/g, "");
 
     const filtered = allUsers.filter(
@@ -180,29 +177,41 @@ function setupEvents() {
     renderContacts(filtered);
   });
 
-  // Logout
-  document.getElementById("logout-btn").onclick = () => {
-    if (socket) socket.disconnect();
-    localStorage.clear();
-    window.location.href = "login.html";
-  };
+  // Logout (Desktop)
+  const logoutBtn = document.getElementById("logout-btn");
+  if (logoutBtn) {
+    logoutBtn.onclick = () => {
+      if (socket) socket.disconnect();
+      localStorage.clear();
+      window.location.href = "login.html";
+    };
+  }
 
-  // Botón cerrar chat actual (X)
-  document.getElementById("close-chat").onclick = () => {
-    selectedUserId = null;
-    document.getElementById("welcome-screen").style.display = "flex";
-    document.getElementById("chat-session").style.display = "none";
-    updateSendButtonState();
-  };
+  // Botón cerrar chat actual (X) o Volver
+  const closeChatBtn = document.getElementById("close-chat");
+  if (closeChatBtn) {
+    closeChatBtn.onclick = () => {
+      selectedUserId = null;
+      selectedUser = null;
 
-  // Envío de mensajes blindado
+      // Vuelve a la pantalla de bienvenida (En PC)
+      document.getElementById("welcome-screen").style.display = "flex";
+      document.getElementById("chat-session").style.display = "none";
+      updateSendButtonState();
+
+      const chatMain = document.querySelector(".chat-main");
+      if (chatMain) {
+        chatMain.classList.remove("show-chat-mobile");
+      }
+    };
+  }
+
   const send = () => {
     const input = document.getElementById("user-input");
     const text = input.value.trim();
 
     if (!text) return;
 
-    // --- AVISO POR MENSAJE LARGO ---
     if (text.length > 500) {
       alert(
         "⚠️ Tu mensaje es demasiado largo. El límite es de 500 caracteres.",
@@ -221,12 +230,16 @@ function setupEvents() {
     }
   };
 
-  document.getElementById("send-message-btn").onclick = send;
-  document.getElementById("user-input").onkeydown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      send();
-    }
-  };
-}
+  const sendBtn = document.getElementById("send-message-btn");
+  if (sendBtn) sendBtn.onclick = send;
 
+  const userInput = document.getElementById("user-input");
+  if (userInput) {
+    userInput.onkeydown = (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        send();
+      }
+    };
+  }
+}

@@ -4,12 +4,12 @@
 
 /* 1. CONTENEDOR PRINCIPAL DEL CHAT */
 .chat-main {
-  flex: 1; /* Ocupa todo el espacio restante a la derecha */
+  flex: 1;
   display: flex;
   flex-direction: column;
   background: var(--surface-chat);
   height: 100%;
-  overflow: hidden; /* Bloquea fugas de scroll */
+  overflow: hidden;
   position: relative;
 }
 
@@ -64,8 +64,36 @@
   padding: 16px 24px;
   background: var(--navy-800);
   border-bottom: 1px solid var(--border-subtle);
-  flex-shrink: 0; /* NO se encoge, siempre visible */
+  flex-shrink: 0;
   z-index: 10;
+}
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  transform: translateX(-4px);
+}
+
+.back-btn:active {
+  transform: scale(0.92);
+}
+
+@media (min-width: 769px) {
+  .back-btn {
+    display: none;
+  }
 }
 
 .active-contact-info {
@@ -96,15 +124,13 @@
 
 /* 4. VISUALIZACIÓN DE MENSAJERÍA (SCROLL) */
 .messages-display {
-  flex: 1; /* CRECE PARA LLENAR EL ESPACIO CENTRAL */
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 24px;
-  overflow-y: auto; /* ÚNICA PARTE CON SCROLL */
+  overflow-y: auto;
   background: #f4f7fb;
-
-  /* Scrollbar personalizado */
   scrollbar-width: thin;
   scrollbar-color: #c5d3e8 transparent;
 }
@@ -171,7 +197,7 @@
   padding: 16px 24px;
   background: #ffffff;
   border-top: 1px solid #e4ecf5;
-  flex-shrink: 0; /* SIEMPRE FIJO EN LA BASE */
+  flex-shrink: 0;
 }
 
 #user-input {
@@ -208,40 +234,37 @@
   background: var(--blue-light);
 }
 
-/* 6. RESPONSIVE (CELULARES) */
+/* ============================================
+   RESPONSIVE CHAT (CELULARES)
+   ============================================ */
 @media (max-width: 768px) {
   .app-layout {
     position: relative;
     overflow: hidden;
   }
 
-  .profile-sidebar {
-    display: none !important; /* Ocultamos para priorizar chat */
-  }
-
-  .directory-container {
+  .chat-main {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    z-index: 20;
+    height: 100%;
+    z-index: 100;
+    background: var(--surface-chat);
+    /* Inicia escondido a la derecha (100%) */
+    transform: translateX(100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .directory-container.hide {
-    transform: translateX(-100%);
+  .chat-main.show-chat-mobile {
+    transform: translateX(0);
+  }
+
+  .back-btn {
+    display: flex !important;
   }
 
   .message-wrapper {
     max-width: 85%;
-  }
-}
-
-@keyframes msg-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }

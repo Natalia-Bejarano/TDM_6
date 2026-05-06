@@ -11,6 +11,7 @@
 /* ============================================
    1. SIDEBAR PERFIL (EXTREMO IZQUIERDO)
    ============================================ */
+
 .profile-sidebar {
   width: 240px;
   min-width: 240px;
@@ -24,38 +25,79 @@
   flex-shrink: 0;
 }
 
+.profile-logo-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-logo {
+  width: 80px;
+  height: 80px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  padding: 10px;
+  object-fit: contain;
+  border: 2px solid var(--color-border);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.profile-logo-box h2 {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+/* ------------------------------------------- */
+
 .profile-nav {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
   flex: 1;
   margin-top: 32px;
+  align-items: center;
 }
 
 .profile-nav a {
-  padding: 12px 16px;
-  border-radius: var(--radius-sm);
-  font-size: 0.95rem;
+  padding: 8px 12px;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--text-secondary);
-  text-align: left;
-  transition: var(--transition);
+  text-align: center;
+  transition: color 0.3s ease;
+  position: relative;
+  text-decoration: none;
 }
 
-.profile-nav a:hover,
+.profile-nav a:hover {
+  color: #ffffff;
+}
 .profile-nav a.active {
-  background: rgba(37, 99, 235, 0.12);
-  color: var(--text-primary);
+  color: #ffffff;
+}
+.profile-nav a.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px; /* Grosor de la línea */
+  background-color: #ffffff; /* Color blanco de la línea */
+  border-radius: 2px;
 }
 
 .profile-user-bottom {
-  margin-top: auto;
+  margin-top: auto; /* Mantiene la info pegada al footer */
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: center; /* Alinea verticalmente la foto y el nombre */
+  gap: 12px; /* Espacio entre la foto y el texto */
   width: 100%;
-  padding: 16px 12px;
-  background: rgba(255, 255, 255, 0.02);
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03); /* Fondo sutil para diferenciarlo */
   border-top: 1px solid var(--border-subtle);
 }
 
@@ -63,6 +105,42 @@
   width: 100%;
   padding: 12px 16px 24px;
   background: rgba(255, 255, 255, 0.02);
+}
+#sidebar-avatar {
+  width: 32px; /* Tamaño pequeño y discreto */
+  height: 32px;
+  border-radius: 50%; /* Círculo perfecto */
+  object-fit: cover; /* Evita que la foto se estire */
+  border: 1.5px solid var(--blue-vivid); /* Borde con el color de la UCA */
+  flex-shrink: 0; /* Evita que la foto se aplaste si el nombre es largo */
+}
+#sidebar-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Pone "..." si el nombre es muy largo */
+}
+
+#logout-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#logout-btn:hover {
+  background-color: #ef4444;
+  color: #ffffff;
+  border-color: #ef4444;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 /* ============================================
@@ -233,7 +311,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  min-width: 0; /* TRUCO DE ORO: Evita que el texto largo rompa el diseño */
+  min-width: 0;
   flex: 1;
 }
 
@@ -248,7 +326,7 @@
 
 .contact-meta {
   font-size: 13px;
-  color: #d1d5db; /* Blanco hueso / Gris clarito */
+  color: #d1d5db;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -258,4 +336,46 @@
   font-size: 12px;
   color: #9ca3af; /* Gris oscuro para el "No disponible" */
 }
+/* ============================================
+   BOTÓN CERRAR SESIÓN MÓVIL (Oculto en PC)
+   ============================================ */
+.mobile-logout-btn {
+  display: none; /* Se oculta en pantallas grandes */
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  margin-left: auto; /* Lo empuja hacia la derecha */
+}
 
+.mobile-logout-btn:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* ============================================
+   RESPONSIVE: SIDEBAR & DIRECTORIO
+   ============================================ */
+@media (max-width: 768px) {
+  /* 1. Ocultamos la barra lateral izquierda (Logo, Mis Chats, etc) */
+  .profile-sidebar {
+    display: none !important;
+  }
+
+  /* 2. El directorio pasa a ocupar toda la pantalla */
+  .directory-container {
+    width: 100% !important;
+    min-width: 100% !important;
+    border-right: none;
+  }
+
+  /* 3. Mostramos el botón de cerrar sesión en miniatura */
+  .mobile-logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

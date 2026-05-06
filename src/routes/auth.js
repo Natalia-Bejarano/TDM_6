@@ -50,8 +50,6 @@ async function handleAuthRoutes(req, res) {
       let users = await getUsers();
       let userIndex = users.findIndex((u) => u.email === email);
 
-      // Decidimos qué imagen usar: la de Google o la nuestra por defecto
-      // Si 'picture' no existe o es una de esas URLs genéricas de Google, usamos la nuestra
       const finalPicture =
         picture && picture.includes("googleusercontent.com")
           ? picture

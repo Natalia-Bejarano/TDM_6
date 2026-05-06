@@ -1,8 +1,7 @@
 /* ============================================
-   GLOBAL.CSS — BASE DEL SISTEMA (ACTUALIZADO)
+   GLOBAL.CSS — BASE DEL SISTEMA 
    ============================================ */
 
-/* RESET PROFESIONAL */
 *,
 *::before,
 *::after {
@@ -66,7 +65,6 @@
 
 /* 
    ESTRUCTURA BASE (EL "BÚNKER")
-   Aquí evitamos que la página entera haga scroll.
 */
 html,
 body {
@@ -82,7 +80,6 @@ body {
 
 /* 
    LAYOUTS PRINCIPALES 
-   Obligamos a que los contenedores hijos ocupen el 100% sin salirse.
 */
 .profile-layout,
 .profile-main,
