@@ -77,7 +77,7 @@ function getUserUnit(user) {
  * Carga la información del usuario en la pantalla de perfil.
  */
 function loadProfile() {
-  const avatar = currentUser.img || "img/default.jpg";
+  const avatar = currentUser.img || "resources/default.png";
   const unit = getUserUnit(currentUser);
 
   // Carga las imágenes del usuario

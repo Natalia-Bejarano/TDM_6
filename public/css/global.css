@@ -1,8 +1,7 @@
 /* ============================================
-   GLOBAL.CSS — BASE DEL SISTEMA
+   GLOBAL.CSS — BASE DEL SISTEMA 
    ============================================ */
 
-/* RESET */
 *,
 *::before,
 *::after {
@@ -25,7 +24,7 @@
   --color-border: #2d4a8a;
   --color-border-soft: #1e3a5f;
 
-  /* CHAT */
+  /* PALETA NAVY (CHAT) */
   --navy-900: #111d2e;
   --navy-800: #162338;
   --navy-700: #1c2d46;
@@ -34,23 +33,28 @@
 
   --blue-vivid: #1a72e8;
   --blue-light: #3b8ef0;
+  --blue-glow: rgba(26, 114, 232, 0.3);
 
   --surface-chat: #f4f7fb;
-  --surface-input: #f4f7fb;
+  --surface-input: #ffffff;
 
-  /* VARIABLES QUE FALTABAN PARA LAS BURBUJAS */
-  --bubble-in-bg: #333333; /* Gris oscuro para el que entra */
-  --bubble-in-txt: #ffffff; /* Letra blanca */
+  /* BURBUJAS */
+  --bubble-in-bg: #333333;
+  --bubble-in-txt: #ffffff;
 
-  --bubble-out-bg: #1c2e5b; /* Azul para el que sale */
-  --bubble-out-txt: #ffffff; /* Letra blanca */
+  --bubble-out-bg: #1c2e5b;
+  --bubble-out-txt: #ffffff;
 
-  /* TEXTO CHAT */
+  /* TEXTO DINÁMICO */
   --text-primary: #eef2f8;
   --text-secondary: #8fa3c0;
   --text-muted: #526a8a;
 
-  /* OTROS */
+  /* BORDES Y SOMBRAS */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.15);
+
+  /* RADIOS */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
@@ -59,34 +63,82 @@
   --transition: 0.2s ease;
 }
 
-/* BASE */
+/* 
+   ESTRUCTURA BASE (EL "BÚNKER")
+*/
 html,
 body {
-  height: 100%;
-  font-family: "Segoe UI", sans-serif;
+  height: 100vh; /* Altura total de la ventana */
+  width: 100vw; /* Ancho total de la ventana */
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background: var(--color-bg);
   color: var(--color-text-primary);
+  overflow: hidden; /* BLOQUEA EL SCROLL GLOBAL */
 }
 
-/* ELEMENTOS */
+/* 
+   LAYOUTS PRINCIPALES 
+*/
+.profile-layout,
+.profile-main,
+.app-layout {
+  display: flex;
+  height: 100%; /* Ocupa el 100% de body (100vh) */
+  width: 100%; /* Ocupa el 100% de body (100vw) */
+  overflow: hidden; /* Evita fugas de contenido */
+}
+
+/* ELEMENTOS BÁSICOS */
 a {
   text-decoration: none;
   color: inherit;
+  transition: var(--transition);
 }
+
 button {
   cursor: pointer;
   border: none;
   background: none;
+  font-family: inherit;
+  transition: var(--transition);
 }
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 img {
   display: block;
   max-width: 100%;
+  object-fit: cover;
 }
 
-/* UTILIDAD CLAVE */
+/* CLASES DE UTILIDAD */
 .avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+  border: 1.5px solid var(--border-medium);
+}
+
+/* Scrollbar personalizado para las áreas internas (Directorio y Chat) */
+.scroll-custom::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-custom::-webkit-scrollbar-thumb {
+  background: var(--navy-500);
+  border-radius: 10px;
+}
+
+.scroll-custom::-webkit-scrollbar-thumb:hover {
+  background: var(--navy-400);
 }

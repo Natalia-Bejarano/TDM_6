@@ -71,7 +71,7 @@ async function handleUsersRoutes(req, res) {
           password,
           email,
           rol: rol || "student",
-          img: req.body.img || "img/default.jpg",
+          img: req.body.img || "resources/default.png",
           specialty: req.body.specialty || null,
           faculty: req.body.faculty || null,
           studentID: req.body.studentID || null,
