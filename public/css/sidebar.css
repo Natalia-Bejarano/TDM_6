@@ -1,152 +1,77 @@
 /* ============================================
-   STATUS DOT
+   LAYOUT Y CONTENEDORES
    ============================================ */
-
-.status-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: #6c757d; /* offline */
-}
-
-.contact-item{
-  display: flex;
-  margin-bottom: 25px;
-  padding: 16px 14px;
-  align-items: center;
-  gap: 12px;
-}
-
-.contact-item:hover {
-  background: var(--navy-700);
-  
-}
-
-.contact-item.online .status-dot {
-  background-color: #28a745;
-}
-
-.contact-item.busy .status-dot {
-  background-color: #dc3545;
-}
-
-
-/* ============================================
-   LAYOUT GENERAL
-   ============================================ */
-
 .app-layout {
   display: flex;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
 }
 
-
 /* ============================================
-   SIDEBAR PERFIL
+   1. SIDEBAR PERFIL (EXTREMO IZQUIERDO)
    ============================================ */
-
 .profile-sidebar {
   width: 240px;
   min-width: 240px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 16px 24px;
-  gap: 32px;
-  background-color: var(--color-sidebar);
-  border-right: 1px solid var(--color-border-soft);
+  padding: 32px 16px 0;
+  background-color: var(--navy-900);
+  border-right: 1px solid var(--border-subtle);
+  flex-shrink: 0;
 }
 
-/* Logo */
-.profile-logo-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
-.profile-logo {
-  width: 88px;
-  height: 88px;
-  padding: 4px;
-  border-radius: 50%;
-  border: 2px solid var(--color-border);
-  object-fit: contain;
-  background: #fff;
-}
-
-.profile-logo-box h2 {
-  font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--color-text-primary);
-}
-
-/* Navegación */
 .profile-nav {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+  flex: 1;
+  margin-top: 32px;
 }
 
 .profile-nav a {
-  padding: 10px 16px;
+  padding: 12px 16px;
   border-radius: var(--radius-sm);
   font-size: 0.95rem;
-  color: var(--color-text-secondary);
-  text-align: center;
+  color: var(--text-secondary);
+  text-align: left;
   transition: var(--transition);
 }
 
-.profile-nav a:hover {
-  background: rgba(37, 99, 235, 0.12);
-  color: var(--color-text-primary);
-}
-
+.profile-nav a:hover,
 .profile-nav a.active {
-  font-weight: 600;
-  color: var(--color-text-primary);
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--text-primary);
 }
 
-/* Usuario inferior */
 .profile-user-bottom {
   margin-top: auto;
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 10px 12px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.04);
+  padding: 16px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid var(--border-subtle);
 }
 
-.profile-user-bottom img {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--color-border);
+.sidebar-footer {
+  width: 100%;
+  padding: 12px 16px 24px;
+  background: rgba(255, 255, 255, 0.02);
 }
-
-.profile-user-bottom strong {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 
 /* ============================================
-   DIRECTORIO (SIDEBAR IZQUIERDO)
+   2. DIRECTORIO (COLUMNA CENTRAL)
    ============================================ */
-
 .directory-container {
-  width: 320px;
+  width: 340px; /* Un poco más ancho para que quepan bien los textos */
+  min-width: 320px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   background: var(--navy-800);
@@ -154,228 +79,183 @@
   overflow: hidden;
 }
 
-/* Header */
+/* HEADER DEL DIRECTORIO (Usuario Actual y Buscador) */
 .directory-header {
-  padding: 18px 16px 12px;
-  border-bottom: 1px solid var(--border-subtle);
+  padding: 24px 20px 16px 20px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 12px; /* Espacio entre el perfil y el buscador */
 }
 
-.directory-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.directory-banner h1 {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-/* Badge estado */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
-  border-radius: 50px;
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--accent-green);
-  background: var(--accent-green-dim);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  cursor: pointer;
-}
-
-.status-badge:hover {
-  background: rgba(34, 197, 94, 0.22);
-}
-
-.status-badge::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-green);
-  animation: pulse-dot 2s infinite;
-}
-
-@keyframes pulse-dot {
-  50% { opacity: 0.45; }
-}
-
-/* Buscador */
-#search-contact {
-  width: 100%;
-  padding: 9px 14px 9px 36px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-medium);
-  background: var(--navy-700);
-  font-size: 13px;
-  color: var(--text-primary);
-}
-
-
-/* ============================================
-   CONTACTOS
-   ============================================ */
-
-.contact-list {
-  flex: 1;
-  overflow-y: hidden;
-  padding: 8px 0;
-  margin-top: 30px;
-  margin-left: 15px;
-}
-
-.contact-section-label {
-  padding: 10px 16px 4px;
-  font-size: 10.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-/* Tarjeta */
-.contact-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 40px;
-  padding: 12px 16px;
-  cursor: pointer;
-  border-left: 3px solid transparent;
-  transition: var(--transition);
-}
-
-.contact-card:hover {
-  background: var(--navy-700);
-  margin-top: 20px;
-}
-
-.contact-card.active {
-  background: var(--navy-600);
-  border-left-color: var(--blue-vivid);
-}
-
-/* Avatar */
-.contact-avatar {
-  position: relative;
-  margin-top: 20px;
-}
-
-.contact-avatar img {
-  width: 44px;
-  height: 44px;
-  margin-top: 20px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-/* Estado avatar */
-.avatar-status {
-  position: absolute;
-  bottom: 1px;
-  right: 1px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--accent-green);
-}
-
-.avatar-status.busy { background: #f59e0b; }
-.avatar-status.away { background: var(--text-muted); }
-
-/* Info */
-.contact-info {
-  flex: 1;
-  display: flex;
-  margin-top: 10px;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.contact-name {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.contact-meta {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.contact-preview {
-  font-size: 12px;
-  color: var(--text-secondary);
-  font-style: italic;
-}
-
-/* Badge */
-.wait-badge {
-  padding: 3px 8px;
-  font-size: 11px;
-  font-weight: 700;
-  border-radius: 50px;
-  background: var(--badge-bg);
-  color: var(--badge-txt);
-}
-
-
-/* ============================================
-   USUARIO ACTUAL
-   ============================================ */
-
+/* Info del usuario actual (Valentina) */
 #current-user-info {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column; /* Pone la foto arriba y el texto abajo */
+  align-items: flex-start;
+  gap: 8px;
 }
 
 #current-user-info img {
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid #22c55e; /* Borde verde */
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.15); /* Brillo suave */
+}
+.current-user-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
 }
 
 .current-user-name {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
 }
 
 .current-user-role {
-  font-size: 11px;
-  color: var(--text-muted);
+  font-size: 13px;
+  color: #a0b4cc;
+}
+.current-user-avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+.current-avatar-status {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #22c55e; /* Verde brillante */
+  border: 2px solid var(--navy-800); /* Borde del color de fondo para separar */
+  box-shadow: 0 0 5px rgba(34, 197, 94, 0.4); /* Efecto glow */
 }
 
+/* BUSCADOR */
+#search-contact {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 8px; /* Bordes redondeados como en tu imagen */
+  border: 2px solid #5a7394; /* Borde visible gris/azulado */
+  background: var(--navy-800);
+  color: #ffffff;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+#search-contact::placeholder {
+  color: #7a93b2;
+}
+
+#search-contact:focus {
+  border-color: var(--blue-light);
+  background: var(--navy-900);
+}
 
 /* ============================================
-   FOOTER
+   3. LISTA DE CONTACTOS
    ============================================ */
+.contact-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 0 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* Separación entre tarjetas */
 
-.sidebar-footer {
-  padding: 12px 16px;
-  border-top: 1px solid var(--border-subtle);
+  scrollbar-width: thin;
+  scrollbar-color: var(--navy-600) transparent;
 }
 
-#logout-btn {
-  width: 100%;
-  padding: 9px 14px;
-  border-radius: var(--radius-md);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-secondary);
+/* TARJETAS DE CONTACTO */
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  cursor: pointer;
   background: transparent;
-  transition: var(--transition);
+  transition: background 0.2s ease;
 }
 
-#logout-btn:hover {
-  background: rgba(239, 68, 68, 0.12);
-  color: #f87171;
+.contact-card:hover,
+.contact-card.active {
+  background: rgba(255, 255, 255, 0.05);
 }
+
+/* AVATAR DE CONTACTOS */
+.contact-avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.contact-avatar img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid transparent; /* Añade esto para evitar saltos */
+  transition: all 0.2s ease;
+}
+.avatar-status {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #64748b; /* Gris oscuro */
+  border: 2px solid var(--navy-800); /* Para que "corte" la imagen */
+  transition: all 0.3s ease;
+}
+.contact-card.online .contact-avatar img {
+  border: 2px solid #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.15);
+}
+.contact-card.online .avatar-status {
+  background: #22c55e;
+  box-shadow: 0 0 5px rgba(34, 197, 94, 0.4);
+}
+.contact-card.online .contact-status-text {
+  color: #4ade80;
+  font-weight: 600;
+}
+
+/* INFO DE TEXTO (Nombre, Facultad, Estado) */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0; /* TRUCO DE ORO: Evita que el texto largo rompa el diseño */
+  flex: 1;
+}
+
+.contact-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Pone "..." si no cabe */
+}
+
+.contact-meta {
+  font-size: 13px;
+  color: #d1d5db; /* Blanco hueso / Gris clarito */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contact-status-text {
+  font-size: 12px;
+  color: #9ca3af; /* Gris oscuro para el "No disponible" */
+}
+

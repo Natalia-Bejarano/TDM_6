@@ -1,29 +1,26 @@
-/* ===== CHAT.CSS ===== */
+/* ============================================
+   CHAT.CSS — ÁREA DE CONVERSACIÓN
+   ============================================ */
 
-/* ==============================
-   ÁREA PRINCIPAL
-   ============================== */
-
+/* 1. CONTENEDOR PRINCIPAL DEL CHAT */
 .chat-main {
-  flex: 1;
+  flex: 1; /* Ocupa todo el espacio restante a la derecha */
   display: flex;
   flex-direction: column;
   background: var(--surface-chat);
-  overflow: hidden;
+  height: 100%;
+  overflow: hidden; /* Bloquea fugas de scroll */
   position: relative;
 }
 
-/* ==============================
-   ESTADO VACÍO
-   ============================== */
-
+/* 2. ESTADO VACÍO (BIENVENIDA) */
 .empty-state {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 20px;
   padding: 40px;
   text-align: center;
   background: #f7f9fc;
@@ -31,116 +28,83 @@
 }
 
 .clock-icon {
-  font-size: 48px;
-  margin-bottom: 4px;
-  opacity: 0.6;
+  font-size: 64px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+  filter: grayscale(1);
 }
 
 .empty-state h2 {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   color: #1a2640;
 }
 
 .empty-state p {
-  font-size: 13.5px;
-  max-width: 280px;
+  font-size: 14px;
+  max-width: 320px;
   line-height: 1.6;
   color: #7a93b2;
 }
 
-/* ==============================
-   SESIÓN DE CHAT
-   ============================== */
-
+/* 3. SESIÓN DE CHAT ACTIVA */
 .chat-session {
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
   overflow: hidden;
 }
 
-/* HEADER */
-
+/* HEADER DEL CHAT */
 .chat-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
-  gap: 12px;
+  padding: 16px 24px;
   background: var(--navy-800);
   border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0; /* NO se encoge, siempre visible */
+  z-index: 10;
 }
 
 .active-contact-info {
   display: flex;
   align-items: center;
   gap: 12px;
-  min-width: 0;
 }
 
 .active-contact-info img {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--navy-500);
 }
 
-.active-contact-details {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
 .active-contact-name {
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 700;
   color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: block;
 }
 
 .active-contact-sub {
   font-size: 11.5px;
   color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-/* BOTÓN VOLVER */
-
-.back-btn {
-  padding: 7px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: var(--radius-md);
-  background: var(--navy-700);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-medium);
-  transition: var(--transition);
-}
-
-.back-btn:hover {
-  background: var(--navy-600);
-  color: var(--text-primary);
-}
-
-/* ==============================
-   MENSAJES
-   ============================== */
-
+/* 4. VISUALIZACIÓN DE MENSAJERÍA (SCROLL) */
 .messages-display {
-  flex: 1;
+  flex: 1; /* CRECE PARA LLENAR EL ESPACIO CENTRAL */
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 24px 20px;
-  overflow-y: auto;
+  gap: 16px;
+  padding: 24px;
+  overflow-y: auto; /* ÚNICA PARTE CON SCROLL */
   background: #f4f7fb;
 
+  /* Scrollbar personalizado */
   scrollbar-width: thin;
   scrollbar-color: #c5d3e8 transparent;
 }
@@ -151,201 +115,133 @@
 
 .messages-display::-webkit-scrollbar-thumb {
   background: #c5d3e8;
-  border-radius: 4px;
+  border-radius: 10px;
 }
 
-/* WRAPPER */
-
+/* BURBUJAS */
 .message-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 4px;
   max-width: 70%;
-  animation: msg-in 0.2s ease;
+  animation: msg-in 0.25s ease-out;
 }
 
 .message-wrapper.incoming {
   align-self: flex-start;
 }
-
 .message-wrapper.outgoing {
   align-self: flex-end;
   align-items: flex-end;
 }
 
-/* BURBUJA */
-
 .message-bubble {
-  padding: 10px 14px;
-  font-size: 13.5px;
-  line-height: 1.55;
-  border-radius: var(--radius-lg);
+  padding: 12px 16px;
+  font-size: 13.8px;
+  line-height: 1.5;
+  border-radius: 18px;
   word-break: break-word;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .incoming .message-bubble {
   background: var(--bubble-in-bg);
   color: var(--bubble-in-txt);
-  border-bottom-left-radius: var(--radius-sm);
+  border-bottom-left-radius: 4px;
 }
 
 .outgoing .message-bubble {
   background: var(--bubble-out-bg);
   color: var(--bubble-out-txt);
-  border-bottom-right-radius: var(--radius-sm);
+  border-bottom-right-radius: 4px;
 }
-
-/* HORA */
 
 .message-time {
-  font-size: 10.5px;
-  font-family: var(--font-mono);
-  color: #000000; /* <--- Cambia esto a negro puro */
-  font-weight: 600; /* Opcional: un poco de grosor para que resalte más */
-  padding: 0 4px;
-  opacity: 0.8; /* Opcional: para que no sea un negro tan "golpeado" */
+  font-size: 10px;
+  margin-top: 4px;
+  color: #000000;
+  font-weight: 700;
+  opacity: 0.7;
 }
 
-/* DIVISOR FECHA */
-
-.date-divider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 8px 0;
-  font-size: 11px;
-  font-weight: 600;
-  color: #a0b4cc;
-}
-
-.date-divider::before,
-.date-divider::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: #d8e3f0;
-}
-
-/* ==============================
-   INPUT
-   ============================== */
-
+/* 5. ÁREA DE ENTRADA (FIJA ABAJO) */
 .chat-input-area {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 16px;
-  background: #fff;
+  gap: 12px;
+  padding: 16px 24px;
+  background: #ffffff;
   border-top: 1px solid #e4ecf5;
+  flex-shrink: 0; /* SIEMPRE FIJO EN LA BASE */
 }
 
 #user-input {
   flex: 1;
-  padding: 10px 18px;
-  font-size: 13.5px;
+  padding: 12px 20px;
+  font-size: 14px;
   border-radius: var(--radius-full);
   border: 1.5px solid #d6e2f0;
   background: var(--surface-input);
-  color: #1a2640;
-  transition: var(--transition);
-}
-
-#user-input::placeholder {
-  color: #a0b4cc;
+  transition: all 0.2s ease;
 }
 
 #user-input:focus {
-  background: #fff;
   border-color: var(--blue-vivid);
-  box-shadow: 0 0 0 3px var(--blue-glow);
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 4px var(--blue-glow);
 }
 
-/* BOTÓN ENVIAR */
-
 #send-message-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   background: var(--blue-vivid);
   color: #fff;
-  font-size: 15px;
-  box-shadow: 0 2px 8px var(--blue-glow);
-  transition: var(--transition);
+  box-shadow: 0 4px 10px var(--blue-glow);
 }
 
 #send-message-btn:hover {
+  transform: scale(1.08);
   background: var(--blue-light);
-  transform: scale(1.06);
 }
 
-#send-message-btn:active {
-  transform: scale(0.97);
-}
-
-/* ==============================
-   ANIMACIONES
-   ============================== */
-
-@keyframes msg-in {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ==============================
-   RESPONSIVE
-   ============================== */
-
+/* 6. RESPONSIVE (CELULARES) */
 @media (max-width: 768px) {
-  .profile-layout {
-    display: block;
-  }
-
   .app-layout {
     position: relative;
-    height: 100vh;
     overflow: hidden;
   }
 
   .profile-sidebar {
-    display: none !important;
+    display: none !important; /* Ocultamos para priorizar chat */
   }
 
   .directory-container {
     position: absolute;
-    inset: 0;
     width: 100%;
-    height: 100%;
-    background: var(--navy-800);
     z-index: 20;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .directory-container.hide {
     transform: translateX(-100%);
   }
 
-  .chat-main,
-  .chat-session {
-    height: 100%;
-    width: 100%;
-  }
-
-  .back-btn {
-    display: block;
-  }
-
   .message-wrapper {
-    max-width: 90%;
+    max-width: 85%;
   }
 }
 
+@keyframes msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -3,7 +3,7 @@
  * Gestiona la actualización visual del chat, contactos, mensajes y estado de conexión.
  */
 
-// funciones auxiliares para seguridad
+// --- Funciones auxiliares de seguridad ---
 function escapeHTML(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -12,27 +12,25 @@ function escapeHTML(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
-// funciones auxiliares para roles
+
+// --- Funciones auxiliares de roles ---
 function normalizeRole(role) {
   const normalized = String(role || "").toLowerCase();
-
   if (["student", "estudiante"].includes(normalized)) return "student";
   if (["monitor", "docente", "teacher", "profesor"].includes(normalized)) {
     return "monitor";
   }
-
   return normalized;
 }
 
 function getRoleLabel(role) {
   const normalized = normalizeRole(role);
-
   if (normalized === "monitor") return "Docente / Monitor";
   if (normalized === "student") return "Estudiante";
-
   return "Usuario";
 }
-// funciones auxiliares para disponibilidad
+
+// --- Funciones auxiliares de disponibilidad ---
 function getAvailableStatus(user) {
   const status = String(user?.status || "").toLowerCase();
   return ["online", "available", "disponible", "activo"].includes(status);
@@ -43,7 +41,6 @@ function getAvailabilityLabel(user) {
 }
 
 export const chatUI = {
-  // funciones que puede usar chat.js
   isUserAvailable(user) {
     return getAvailableStatus(user);
   },
@@ -52,52 +49,49 @@ export const chatUI = {
     return normalizeRole(role);
   },
 
-  // Renderiza el perfil del usuario actual en la barra lateral
-
+  // 1. RENDERIZAR USUARIO ACTUAL (VALENTINA/ADRIANA)
   renderCurrentUserInfo(user) {
     const container = document.getElementById("current-user-info");
     if (!container) return;
 
+    // ESTRUCTURA ACTUALIZADA CON EL CONTENEDOR DEL AVATAR Y EL PUNTO VERDE
     container.innerHTML = `
-      <div class="user-header clickable-profile" title="Ver configuración de cuenta">
-        <img src="${escapeHTML(user.img || "resources/default.png")}" class="avatar-sm">
-        <div class="details">
-          <strong>${escapeHTML(user.name)}</strong>
-          <span>${getRoleLabel(user.rol)}</span>
-        </div>
+      <div class="current-user-avatar">
+        <img src="${escapeHTML(user.img || "resources/default.png")}" alt="Foto de Perfil">
+        <span class="current-avatar-status"></span>
+      </div>
+      <div class="current-user-details">
+        <span class="current-user-name">${escapeHTML(user.name)}</span>
+        <span class="current-user-role">${getRoleLabel(user.rol)}</span>
       </div>
     `;
-    //hacer clic en perfil del usuario para ir a configuracion
 
+    // Clic en el perfil para ir a configuración
+    container.style.cursor = "pointer";
     container.onclick = () => {
       window.location.href = "profile.html";
     };
   },
 
-  // Genera la lista de contactos filtrada por rol: Monitor o Estudiante
+  // 2. RENDERIZAR DIRECTORIO DE CONTACTOS
   renderUserList(users, currentUser, onSelect) {
     const listContainer = document.getElementById("contact-list");
     if (!listContainer) return;
 
     listContainer.innerHTML = "";
-
     const currentRole = normalizeRole(currentUser.rol);
 
     const filtered = users.filter((u) => {
       if (u.id === currentUser.id) return false;
-
       const userRole = normalizeRole(u.rol);
-
       if (currentRole === "student") return userRole === "monitor";
       if (currentRole === "monitor") return userRole === "student";
-
       return false;
     });
 
-    // mensaje cuando no hay contactos visibles
     if (filtered.length === 0) {
       listContainer.innerHTML = `
-        <div class="empty-contact-list">
+        <div class="empty-contact-list" style="padding: 20px; color: #7a93b2; text-align: center; font-size: 13px;">
           No hay contactos disponibles para tu rol o búsqueda.
         </div>
       `;
@@ -108,36 +102,34 @@ export const chatUI = {
       const available = getAvailableStatus(user);
       const item = document.createElement("div");
 
-      // clases para contactos disponibles o no disponibles
-      item.className = `contact-item ${escapeHTML(user.status || "offline")} ${
-        available ? "" : "contact-disabled"
-      }`;
+      // CLASES CORREGIDAS PARA COINCIDIR CON SIDEBAR.CSS (.contact-card en lugar de .contact-item)
+      const statusClass = available ? "online" : "offline";
+      item.className = `contact-card ${statusClass}`;
 
+      // ESTRUCTURA CORREGIDA
       item.innerHTML = `
-        <div class="avatar-wrapper">
-          <img src="${escapeHTML(user.img || "resources/default.png")}" class="avatar" alt="Foto de ${escapeHTML(user.name)}">
-          <span class="status-dot"></span>
+        <div class="contact-avatar">
+          <img src="${escapeHTML(user.img || "resources/default.png")}" alt="Foto de ${escapeHTML(user.name)}">
+          <span class="avatar-status"></span>
         </div>
-
-        <div class="contact-details">
-          <div class="contact-name">${escapeHTML(user.name)}</div>
-          <div class="contact-extra">${escapeHTML(user.specialty || user.faculty || "")}</div>
-          <small class="contact-status-text">${getAvailabilityLabel(user)}</small>
+        <div class="contact-info">
+          <span class="contact-name">${escapeHTML(user.name)}</span>
+          <span class="contact-meta">${escapeHTML(user.specialty || user.faculty || "")}</span>
+          <span class="contact-status-text">${getAvailabilityLabel(user)}</span>
         </div>
       `;
 
-      // marcar contacto seleccionado y bloquear offline
       item.onclick = () => {
         if (!available) {
           alert(`${user.name} no está disponible en este momento.`);
           return;
         }
 
-        document.querySelectorAll(".contact-item").forEach((contact) => {
-          contact.classList.remove("selected");
+        // Remover "active" de todos y ponérselo al seleccionado
+        document.querySelectorAll(".contact-card").forEach((contact) => {
+          contact.classList.remove("active");
         });
-
-        item.classList.add("selected");
+        item.classList.add("active");
 
         onSelect(user);
       };
@@ -146,36 +138,27 @@ export const chatUI = {
     });
   },
 
-  /**
-   * ACTUALIZACIÓN: Actualiza la cabecera del chat con el contacto activo
-   */
+  // 3. ACTUALIZAR CABECERA DEL CHAT (VENTANA DE CONVERSACIÓN)
   updateChatHeader(contact) {
     const headerInfo = document.getElementById("active-contact-info");
     if (!headerInfo) return;
 
+    // ESTRUCTURA CORREGIDA PARA COINCIDIR CON CHAT.CSS
     headerInfo.innerHTML = `
-      <div class="active-user-header">
-        <img src="${escapeHTML(contact.img || "resources/default.png")}" class="avatar-sm" alt="Foto de ${escapeHTML(contact.name)}">
-        <div>
-          <strong>${escapeHTML(contact.name)}</strong>
-          <small>${escapeHTML(contact.specialty || contact.faculty || "")}</small>
-          <small class="active-contact-status">${getAvailabilityLabel(contact)}</small>
-        </div>
+      <img src="${escapeHTML(contact.img || "resources/default.png")}" alt="Foto de ${escapeHTML(contact.name)}">
+      <div class="active-contact-details">
+        <span class="active-contact-name">${escapeHTML(contact.name)}</span>
+        <span class="active-contact-sub">${getAvailabilityLabel(contact)} • ${escapeHTML(contact.specialty || contact.faculty || "")}</span>
       </div>
     `;
   },
 
-  /**
-   * ACTUALIZACIÓNN: Renderiza una burbuja de mensaje en pantalla
-   */
+  // 4. RENDERIZAR BURBUJAS DE MENSAJES
   displayMessage(text, type) {
     const container = document.getElementById("messages-display");
     if (!container) return;
 
-    // 1. Creamos el WRAPPER (el contenedor que alinea a izq o der)
     const wrapper = document.createElement("div");
-
-    // Convertimos los tipos del socket a las clases de tu CSS
     const wrapperClass = type === "sent" ? "outgoing" : "incoming";
     wrapper.className = `message-wrapper ${wrapperClass}`;
 
@@ -185,8 +168,6 @@ export const chatUI = {
       minute: "2-digit",
     });
 
-    // 2. Insertamos la estructura que el CSS espera: Bubble -> TextContent
-    // La hora va fuera de la burbuja según tu diseño de referencia
     wrapper.innerHTML = `
       <div class="message-bubble">
         <div class="text-content">${escapeHTML(text)}</div>
@@ -195,12 +176,10 @@ export const chatUI = {
     `;
 
     container.appendChild(wrapper);
-
-    // 3. AutoScroll para ver siempre el último mensaje
     container.scrollTop = container.scrollHeight;
   },
 
-  // Mostrar estado de conexión del WebSocket
+  // 5. ESTADO DE CONEXIÓN
   updateConnectionStatus(status) {
     const welcomeTitle = document.getElementById("welcome-title");
     const welcomeMsg = document.getElementById("welcome-msg");
@@ -222,4 +201,3 @@ export const chatUI = {
     }
   },
 };
-
